@@ -26,11 +26,9 @@
                 <input class=" w-full outline-0 " type=" text " placeholder=" Search notes " style=" background-color: transparent; ">
             </div>
 
-            <div class=" allnotesbtn w-fit px-3 py-1 flex items-center justify-items-center ml-[12.6%] mt-3 rounded-2xl cursor-pointer " style=" background-color: rgba(192, 192, 192, 0.393); ">
-                <h3>All</h3>
-            </div>
+        </nav>
 
-            <div id=" allnotes " class=" notes-section cursor-pointer notes flex gap-8 flex-wrap relative p-6 ml-[12.7%] overflow-x-hidden overflow-y-auto w-9/12 mt-4 h-[60vh] " style=" background-color: rgba(239, 239, 239, 0.688); ">
+            <div id="allnotes " class="notes-section cursor-pointer notes flex gap-8 flex-wrap relative p-6 ml-[12.7%] overflow-x-hidden overflow-y-auto w-9/12 mt-4 h-[70vh] rounded-2xl " style=" background-color: rgba(239, 239, 239, 0.688); ">
 
                 <div class=" addnotebtn fixed z-50 left-[78%] bottom-[20%] w-[3vw] h-[3vw] flex items-center justify-center rounded-full " style=" background-color: rgb(205, 195, 50); ">
                     <a href=" /mynotes/create/notes "><span><i class=" ri-add-line text-white text-2xl cursor-pointer "></i></span></a>
@@ -42,77 +40,97 @@
 
                         <% allnotes.forEach(function(elem){ %>
 
-                            <div class=" note relative pt-2 text-black w-[14%] h-[42%] overflow-x-hidden overflow-y-auto rounded-2xl " style=" background-color: rgba(49, 135, 255, 0.566); ">
+                
+                            <a href="/mynotes/opennote/<%=elem._id %>">
+                <div class="note relative pt-2 text-black w-[15vmax] h-[10vmax] overflow-x-hidden overflow-y-auto rounded-2xl " style=" background-color: rgba(49, 135, 255, 0.566); ">
 
-                                <p class=" hidden " id=" read ">/mynotes/opennote/<%= elem._id %></p>
 
-                                <h3 class=" text-xl font-semibold ml-3 "><%= elem.title %></h3>
-            
-                                <div class=" description w-full h-[55%] pt-2 ">
-                                    <p class=" ml-3 leading-none "><%= elem.description %></p>
-                                </div>
-                                <p class=" hidden "><%= elem._id %></p>
-                                <a  id=" readmore " ><span class=" ml-3 absolute bottom-[15%] tracking-tighter cursor-pointer ">read more.</span></a>
-                <span class=" ml-3 text-xs font-bold absolute bottom-[5%] ">
-                                   <%=  formattedDate %>
-                                </span>
+                    <h3 class="text-lg  font-semibold ml-3 ">
+                        <%= elem.title %>
+                    </h3>
+
+                    <div class=" description w-full h-[55%] pt-2 ">
+                        <p class=" ml-3 leading-none text-lg ">
+                            <%= elem.description %>
+                        </p>
+                    </div>
+                    <p id="hidden " class="hidden ">
+                        <%= elem._id %>
+                    </p>
+
+                    <div class="icons flex gap-3 items-center  absolute bottom-[12%]  ">
+                        <a id="more " href="/mynotes/opennote/<%=elem._id %>">
+                            <p><i class="ri-more-fill "></i></p>
+                        </a>
+                        <a id="edit " href="/mynotes/editnote/<%=elem._id %> ">
+                            <p><i class="ri-edit-circle-line "></i></p>
+                        </a>
+                    </div>
+
+
+                    <span class=" ml-3 text-xs font-bold absolute bottom-[5%] ">
+                                       <%=  elem.formattedDate %>
+                                    </span>
+                </div>
+                </a>
+
+
+                <%   }   ) %>
+                    <%  } else{  %>
+                        <p>Sorry, you have'nt created any notes yet.</p>
+                        <%  } %>
+
+
+
     </div>
-    <%   }   ) %>
-        <%  } else{  %>
-            <p>Sorry, you have'nt created any notes yet.</p>
-            <%  } %>
+
+    </div>
 
 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .notes-section::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .note::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .note {
+            resize: both;
+            overflow: auto;
+            max-width: 100%;
+            max-height: 100%;
+            cursor: pointer;
+        }
+        
+        .description::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .description p {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+    </style>
 
-                </div>
-                </nav>
-                </div>
+    <script>
+    </script>
 
-
-                <style>
-                    * {
-                        margin: 0;
-                        padding: 0;
-                        box-sizing: border-box;
-                    }
-                    
-                    html,
-                    body {
-                        width: 100%;
-                        height: 100%;
-                    }
-                    
-                    .notes-section::-webkit-scrollbar {
-                        display: none;
-                    }
-                    
-                    .note::-webkit-scrollbar {
-                        display: none;
-                    }
-                    
-                    .note {
-                        resize: both;
-                        overflow: auto;
-                        max-width: 100%;
-                        max-height: 100%;
-                        cursor: pointer;
-                    }
-                    
-                    .description::-webkit-scrollbar {
-                        display: none;
-                    }
-                    
-                    .description p {
-                        overflow: hidden;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                        cursor: pointer;
-                    }
-                </style>
-
-                <script>
-                </script>
-                <script src=" https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js " integrity=" sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg==" crossorigin=" anonymous " referrerpolicy=" no-referrer "></script>
 </body>
 
 </html>

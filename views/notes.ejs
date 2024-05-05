@@ -11,7 +11,7 @@
 
 <body>
 
-    <div class="container w-full h-full relative ">
+    <div class="container w-full h-full relative " style="background-color: rgba(49, 135, 255, 0.566);">
         <div class="nav w-full flex justify-between  px-14 items-center pt-8">
             <a href="/"><span><i class="ri-arrow-left-line font-bold   text-lg "></i></span></a>
 
@@ -23,18 +23,28 @@
 
         <form class="px-14 mt-7 " action="/mynotes/add/notes" method="post">
 
-            <input class="w-11/12 py-2  text-xl outline-0 font-medium" type="text" placeholder="Title." name="title">
+            <input class="w-11/12 py-2  text-xl outline-0 font-medium bg-transparent text-black cursor-pointer" type="text" placeholder="Title." name="title">
 
             <p class="mt-5">
                 <%= formattedDate %>
             </p>
 
-            <textarea class="w-11/12 py-4 pr-4 h-[73vh] outline-offset-0 text-black  outline-0 text-xl " placeholder="Start typing........" name="description"></textarea>
+            <textarea class="w-11/12 py-4 pr-4 h-[73vh] outline-offset-0 text-black bg-transparent cursor-pointer  outline-0 text-xl " placeholder="Start typing........" name="description"></textarea>
 
         </form>
     </div>
 
 
+
+    <style>
+        input::placeholder {
+            color: black;
+        }
+        
+        textarea::placeholder {
+            color: black;
+        }
+    </style>
     <script>
         let right = document.querySelector("#right")
         let form = document.querySelector("form");

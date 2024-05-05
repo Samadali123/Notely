@@ -5,13 +5,44 @@ const notes = require('../models/notes');
 
 
 
+// router.get("/", async(req, res) => {
+//     try {
+//         const allnotes = await notesModel.find();
+
+//         let formattedDate;
+//         allnotes.forEach(function(note) {
+//             let date = note.date
+//             let dateObj = new Date(date);
+
+//             let monthNames = [
+//                 '', 'January', 'February', 'March', 'April', 'May', 'June',
+//                 'July', 'August', 'September', 'October', 'November', 'December'
+//             ];
+
+//             let day = dateObj.getDate();
+//             let month = dateObj.getMonth() + 1;
+//             let year = dateObj.getFullYear();
+
+//             let monthName = monthNames[month];
+//             formattedDate = `${monthName} ${day}, ${year}`;
+//         })
+//         res.render('index', { allnotes, formattedDate })
+//     } catch (err) {
+
+//         res.status(500).json({ success: false, message: "Something went wrong" });
+//     }
+// })
+
+
+
+
 router.get("/", async(req, res) => {
     try {
         const allnotes = await notesModel.find();
 
-        let formattedDate;
-        allnotes.forEach(function(note) {
-            let date = note.date
+        // Format the date for each note without changing the existing `date` property
+        allnotes.forEach((note) => {
+            let date = note.date;
             let dateObj = new Date(date);
 
             let monthNames = [
@@ -24,14 +55,20 @@ router.get("/", async(req, res) => {
             let year = dateObj.getFullYear();
 
             let monthName = monthNames[month];
-            formattedDate = `${monthName} ${day}, ${year}`;
-        })
-        res.render('index', { allnotes, formattedDate })
-    } catch (err) {
+            let formattedDate = `${monthName} ${day}, ${year}`;
 
+            // Assign the formatted date to a new property in each note
+            note.formattedDate = formattedDate;
+        });
+
+        // Render the index view and pass the notes with formatted date
+        res.render('index', { allnotes });
+    } catch (err) {
         res.status(500).json({ success: false, message: "Something went wrong" });
     }
-})
+});
+
+
 
 
 router.get("/mynotes/create/notes", (req, res) => {
@@ -147,6 +184,55 @@ router.get("/mynotes/deletenote/:noteId", async(req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: "Something went wrong" });
     }
+})
+
+
+
+
+router.get("/mynotes/editnote/:noteId", async(req, res) => {
+    try {
+
+        const editnote = await notesModel.findOne({ _id: req.params.noteId });
+
+        let formattedDate;
+
+        let date = editnote.date;
+        let dateObj = new Date(date);
+
+        let monthNames = [
+            '', 'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        let day = dateObj.getDate();
+        let month = dateObj.getMonth() + 1;
+        let year = dateObj.getFullYear();
+
+        let monthName = monthNames[month];
+        formattedDate = `${monthName} ${day}, ${year}`;
+
+        res.render("editnote", { editnote, formattedDate });
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Something wen wrong." })
+    }
+
+})
+
+
+
+
+router.post("/mynotes/updatenote/:noteId", async(req, res) => {
+    try {
+        const { title, description } = req.body;
+        const updatednote = await notesModel.findByIdAndUpdate({ _id: req.params.noteId }, { $set: { title, description } }, { new: true });
+        res.redirect("/");
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Something went wrong." });
+    }
+
+
 })
 
 
