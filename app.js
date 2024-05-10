@@ -3,6 +3,8 @@ const express = require(`express`)
 const app = express();
 const path = require('path');
 const usersRouter = require(`./routes/userRoutes`);
+const cookieParser = require("cookie-parser")
+
 
 // setting a database connection
 require("./models/dbconfig").dbconnection();
@@ -21,6 +23,10 @@ app.use(logger('tiny'));
 //body parsers
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+
+
+// active cookie-parser for reading a cookie in the backend
+app.use(cookieParser());
 
 
 // base uri for user routes

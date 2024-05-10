@@ -4,16 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Notes | Open Note</title>
+    <title>Notely | Open Notes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
 </head>
 
 <body>
 
-    <div class="container w-full h-full relative  " style="background-color: rgba(49, 135, 255, 0.566);">
+    <div class="container w-full h-full relative bg-gray-50 dark:bg-gray-900 text-white  " style="">
         <div class="nav w-full h-[8vh] flex justify-between  px-14 items-center pt-8">
-            <a href="/"><span><i class="ri-arrow-left-line font-bold   text-lg "></i></span></a>
+            <a href="/home"><span><i class="ri-arrow-left-line font-bold   text-lg "></i></span></a>
 
             <div class="right flex gap-3 items-center">
                 <span id="delete" class="font-bold text-lg  cursor-pointer">
@@ -26,27 +26,27 @@
         <div class="texts w-full h-[92vh] ">
 
             <div class="head  w-full px-14 pt-5">
-                <h3 class="text-2xl font-medium ">
+                <h3 class="text-2xl font-normal tracking-wider ">
                     <%= opennote.title %>
                 </h3>
 
-                <p class="mt-2">
+                <p class="mt-2 font-light ">
                     <%= formattedDate %>
                 </p>
             </div>
 
             <div class="description w-full mt-4  px-1  h-[85%] px-14   overflow-x-hidden overflow-y-auto  ">
-                <p class="font-semibold text-lg">
+                <p class="font-normal tracking-wider text-lg">
                     <%= opennote.description %>
                 </p>
 
-                <div class="delete-container hidden  fixed z-50  top-2/4 left-2/4  text-center py-5  overflow-hidden  w-[13vw] h-[8vw]  rounded-lg " style="background-color:white;">
-                    <h3 class="font-medium tracking-tighter">Delete note</h3>
+                <div class="delete-container  hidden text-black  fixed z-50  top-2/4 left-2/4  text-center py-5  overflow-hidden  w-[13vw] h-[8vw]  rounded-lg " style="background-color:white;">
+                    <h3 class="font-medium tracking-tighter" style="">Delete note</h3>
                     <p>Delete this note?</p>
 
                     <div class="icons mt-3  w-full ">
-                        <button id="cancel" class="rounded-3xl  text-zinc-900 px-3 py-1  text-sm" style="background-color: silver;">Cancel</button>
-                        <button id="delete" class="rounded-3xl  text-white px-3 py-1  text-sm ml-3" style="background-color:royalblue;">
+                        <button id="cancel" class="rounded-3xl   px-3 py-1  text-sm" style="background-color: silver;">Cancel</button>
+                        <button id="delete" class="rounded-3xl   px-3 py-1 text-white  text-sm ml-3" style="background-color:royalblue;">
                             <a href="/mynotes/deletenote/<%= opennote._id %>">Delete</a>
                         </button>
                     </div>

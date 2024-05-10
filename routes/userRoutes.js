@@ -2,41 +2,128 @@ const express = require(`express`)
 const router = express.Router();
 const notesModel = require('../models/notes');
 const notes = require('../models/notes');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken")
+const userModel = require("../models/users");
+const { config } = require('dotenv');
+//call the environment varibles set in  env
+config();
 
-
-
-// router.get("/", async(req, res) => {
-//     try {
-//         const allnotes = await notesModel.find();
-
-//         let formattedDate;
-//         allnotes.forEach(function(note) {
-//             let date = note.date
-//             let dateObj = new Date(date);
-
-//             let monthNames = [
-//                 '', 'January', 'February', 'March', 'April', 'May', 'June',
-//                 'July', 'August', 'September', 'October', 'November', 'December'
-//             ];
-
-//             let day = dateObj.getDate();
-//             let month = dateObj.getMonth() + 1;
-//             let year = dateObj.getFullYear();
-
-//             let monthName = monthNames[month];
-//             formattedDate = `${monthName} ${day}, ${year}`;
-//         })
-//         res.render('index', { allnotes, formattedDate })
-//     } catch (err) {
-
-//         res.status(500).json({ success: false, message: "Something went wrong" });
-//     }
-// })
-
-
-
+const secretKey = process.env.JWT_SECRET_KEY;
 
 router.get("/", async(req, res) => {
+    try {
+        res.render('index');
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Something went wrong" });
+    }
+});
+
+
+router.get("/login", (req, res) => {
+    res.render("login")
+})
+
+
+
+
+if (!secretKey) {
+    console.error('JWT secret key is missing. Please set it in the environment variables.');
+    process.exit(1);
+}
+
+
+router.post("/notely/registeraccount", async(req, res) => {
+    try {
+        const { username, email, password } = req.body;
+        const user = await userModel.findOne({ email });
+        if (user) {
+            return res.status(409).json({ success: false, message: "User is already registered" });
+        }
+
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const newUser = await userModel.create({
+            username,
+            email,
+            password: hashedPassword
+        });
+
+        const token = jwt.sign({ email: newUser.email, userid: newUser._id },
+            secretKey, { algorithm: 'HS256', expiresIn: '1h' }
+        );
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+
+        res.redirect("/home");
+    } catch (error) {
+
+        console.error(error);
+        res.status(500).json({ success: false, message: "Something went wrong" });
+    }
+});
+
+
+
+
+router.post("/Notely/login", async(req, res, ) => {
+    let { email, password } = req.body
+    let user = await userModel.findOne({ email })
+    if (!user) return res.status(err.status || 500).json({ success: false, message: "Unable to login,  please try again" })
+
+    bcrypt.compare(password, user.password, function(err, result) {
+        if (err) {
+            res.status(err.status || 500).json({ success: false, message: err.message })
+        } else {
+            if (result) {
+                let token = jwt.sign({ email: user.email, userid: user._id }, secretKey);
+                res.cookie("token", token)
+                res.status(401).redirect("/home")
+
+            } else res.status(400).json({ success: false, message: "Please login to your account" })
+        }
+
+    });
+
+
+})
+
+
+
+router.get("/logout", (req, res) => {
+    res.clearCookie("token");
+    res.redirect("/login")
+
+})
+
+
+
+function IsLoggedIn(req, res, next) {
+    const token = req.cookies.token;
+    if (!token) {
+        return res.status(401).json({ success: false, message: "You must be logged in to access this resource" });
+    }
+
+    try {
+        const data = jwt.verify(token, secretKey);
+        req.user = data;
+        next();
+    } catch (err) {
+
+        console.error('Token verification error:', err);
+        return res.status(401).json({ success: false, message: "Invalid or expired token. Please log in again" });
+    }
+}
+
+
+
+router.get("/home", IsLoggedIn, async(req, res, next) => {
+
     try {
         const allnotes = await notesModel.find();
 
@@ -60,14 +147,12 @@ router.get("/", async(req, res) => {
             // Assign the formatted date to a new property in each note
             note.formattedDate = formattedDate;
         });
-
-        // Render the index view and pass the notes with formatted date
-        res.render('index', { allnotes });
+        res.render('home', { allnotes });
     } catch (err) {
         res.status(500).json({ success: false, message: "Something went wrong" });
     }
-});
 
+})
 
 
 
@@ -115,6 +200,8 @@ router.get("/mynotes/create/notes", (req, res) => {
 })
 
 
+
+
 router.post("/mynotes/add/notes", async(req, res) => {
     const { title, description } = req.body;
 
@@ -123,24 +210,12 @@ router.post("/mynotes/add/notes", async(req, res) => {
             title,
             description
         });
-
-        // res.render('notes', { creatednote });
-        res.redirect("/")
+        res.redirect("/home")
 
     } catch (err) {
         res.status(500).json({ success: false, message: "Something went wrong" });
     }
 })
-
-
-
-
-
-
-
-
-
-
 
 
 router.get('/mynotes/opennote/:noteId', async(req, res) => {
@@ -174,13 +249,10 @@ router.get('/mynotes/opennote/:noteId', async(req, res) => {
 
 
 
-
-
-
 router.get("/mynotes/deletenote/:noteId", async(req, res) => {
     try {
         const deletedNote = await notesModel.findByIdAndDelete(req.params.noteId);
-        res.redirect("/");
+        res.redirect("/home");
     } catch (error) {
         res.status(500).json({ success: false, message: "Something went wrong" });
     }
@@ -222,19 +294,80 @@ router.get("/mynotes/editnote/:noteId", async(req, res) => {
 
 
 
+
+
+
+// router.post("/mynotes/updatenote/:noteId", async(req, res) => {
+//     try {
+//         const { title, description } = req.body;
+
+//         // Find the existing note by ID
+//         const existingNote = await notesModel.findById(req.params.noteId);
+
+//         if (!existingNote) {
+//             return res.status(404).json({ success: false, message: "Note not found" });
+//         }
+
+//         // Update logic based on provided data
+//         const updatedNote = {
+//             title: title ? title : existingNote.title, // Update title if provided, otherwise keep existing
+//             description: description ? description : existingNote.description, // Update description if provided, otherwise keep existing
+//             // Handle potential error if previousVersions is not an array
+//             previousVersions: existingNote.previousVersions ? [...existingNote.previousVersions, {
+//                 title: existingNote.title, // Store previous title even if updated
+//                 description: existingNote.description, // Store previous description even if updated
+//                 updatedAt: existingNote.updatedAt,
+//             }] : [], // If not an array, initialize with an empty array
+//             updatedAt: Date.now(),
+//         };
+
+//         // Update the note with the combined data
+//         await notesModel.findByIdAndUpdate(req.params.noteId, updatedNote);
+
+//         // Redirect to /home upon successful update
+//         res.redirect("/home");
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ success: false, message: "Something went wrong" });
+//     }
+// });
+
+
+
+
+
+
 router.post("/mynotes/updatenote/:noteId", async(req, res) => {
     try {
         const { title, description } = req.body;
-        const updatednote = await notesModel.findByIdAndUpdate({ _id: req.params.noteId }, { $set: { title, description } }, { new: true });
-        res.redirect("/");
+        const existingNote = await notesModel.findById(req.params.noteId);
+        if (!existingNote) {
+            return res.status(404).json({ success: false, message: "Note not found" });
+        }
+
+        const updatedTitle = title ? title : existingNote.title;
+        const updatedDescription = description ? `${existingNote.description} \n\n ${description}` : existingNote.description
+
+        const updatedNote = {
+            title: updatedTitle,
+            description: updatedDescription,
+            previousVersions: existingNote.previousVersions ? [...existingNote.previousVersions, {
+                title: existingNote.title,
+                description: existingNote.description,
+                updatedAt: existingNote.updatedAt,
+            }] : [],
+            updatedAt: Date.now(),
+        };
+
+        await notesModel.findByIdAndUpdate(req.params.noteId, updatedNote);
+        res.redirect("/home");
 
     } catch (error) {
-        res.status(500).json({ success: false, message: "Something went wrong." });
+        console.error(error);
+        res.status(500).json({ success: false, message: "Something went wrong" });
     }
-
-
-})
-
+});
 
 
 

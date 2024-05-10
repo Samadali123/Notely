@@ -1,135 +1,65 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes App | Home page</title>
+    <title>Notely | Sign up Account</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
 </head>
 
 <body>
-    <div class="container w-full h-full relative  pt-8">
-        <nav>
-            <h1 class="text-center  text-2xl font-medium" style="" ">Make your Persnalized notes now</h1>
 
-            <div class=" buttons w-full flex justify-center items-center gap-6 mt-4 cursor-pointer ">
-                <span><i class=" ri-booklet-fill text-2xl font-medium " style=" color: rgb(205, 195, 50); "></i></span>
-                <div class=" rightbox w-[1.5vw] h-[1.5vw] flex justify-center items-center " style=" border: 2px solid black; ">
-                    <p><i class=" ri-check-double-fill "></i></p>
-                </div>
-            </div>
-
-            <div class=" searchbar w-9/12 ml-[12.5%] mt-3 flex items-center gap-3 rounded-full px-4 py-1 text-black " style=" background-color: rgba(192, 192, 192, 0.393); ">
-                <p><i class=" ri-search-2-line "></i></p>
-                <input class=" w-full outline-0 " type=" text " placeholder=" Search notes " style=" background-color: transparent; ">
-            </div>
-
-        </nav>
-
-            <div id="allnotes " class="notes-section cursor-pointer notes flex gap-8 flex-wrap relative p-6 ml-[12.7%] overflow-x-hidden overflow-y-auto w-9/12 mt-4 h-[70vh] rounded-2xl " style=" background-color: rgba(239, 239, 239, 0.688); ">
-
-                <div class=" addnotebtn fixed z-50 left-[78%] bottom-[20%] w-[3vw] h-[3vw] flex items-center justify-center rounded-full " style=" background-color: rgb(205, 195, 50); ">
-                    <a href=" /mynotes/create/notes "><span><i class=" ri-add-line text-white text-2xl cursor-pointer "></i></span></a>
-                </div>
+    <section class="bg-gray-50 dark:bg-gray-900">
+        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+            <a class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+                <img class="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo"> Notely
+            </a>
+            <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                        Let's Create Personalized Notes
+                    </h1>
+                    <form class="space-y-4 md:space-y-6" action="/notely/registeraccount" method="post">
+                        <div>
+                            <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+                            <input type="text" name="username" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="name@username" required="">
+                        </div>
 
 
-               
-                       <% if(allnotes.length > 0){  %>
-
-                        <% allnotes.forEach(function(elem){ %>
-
-                
-                            <a href="/mynotes/opennote/<%=elem._id %>">
-                <div class="note relative pt-2 text-black w-[15vmax] h-[10vmax] overflow-x-hidden overflow-y-auto rounded-2xl " style=" background-color: rgba(49, 135, 255, 0.566); ">
+                        <div>
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                            <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="name@company.com" required="">
+                        </div>
 
 
-                    <h3 class="text-lg  font-semibold ml-3 ">
-                        <%= elem.title %>
-                    </h3>
+                        <div>
+                            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                            <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                required="">
+                        </div>
 
-                    <div class=" description w-full h-[55%] pt-2 ">
-                        <p class=" ml-3 leading-none text-lg ">
-                            <%= elem.description %>
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="terms" aria-describedby="terms" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required="">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="terms" class="font-light text-gray-500 dark:text-gray-300">I accept the <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="#">Terms and Conditions</a></label>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Create Account</button>
+                        <p class="text-sm font-light text-center text-gray-500 dark:text-gray-400">
+                            Already have an account? <a href="/login" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign in</a>
                         </p>
-                    </div>
-                    <p id="hidden " class="hidden ">
-                        <%= elem._id %>
-                    </p>
-
-                    <div class="icons flex gap-3 items-center  absolute bottom-[12%]  ">
-                        <a id="more " href="/mynotes/opennote/<%=elem._id %>">
-                            <p><i class="ri-more-fill "></i></p>
-                        </a>
-                        <a id="edit " href="/mynotes/editnote/<%=elem._id %> ">
-                            <p><i class="ri-edit-circle-line "></i></p>
-                        </a>
-                    </div>
-
-
-                    <span class=" ml-3 text-xs font-bold absolute bottom-[5%] ">
-                                       <%=  elem.formattedDate %>
-                                    </span>
+                    </form>
                 </div>
-                </a>
-
-
-                <%   }   ) %>
-                    <%  } else{  %>
-                        <p>Sorry, you have'nt created any notes yet.</p>
-                        <%  } %>
-
-
-
-    </div>
-
-    </div>
-
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-        }
-        
-        .notes-section::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .note::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .note {
-            resize: both;
-            overflow: auto;
-            max-width: 100%;
-            max-height: 100%;
-            cursor: pointer;
-        }
-        
-        .description::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .description p {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            cursor: pointer;
-        }
-    </style>
-
-    <script>
-    </script>
+            </div>
+        </div>
+    </section>
 
 </body>
 

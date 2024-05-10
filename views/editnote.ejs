@@ -4,18 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Notes | Edit Note</title>
+    <title>Notely | Edit Notes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-900 text-white">
 
-    <div class="container w-full h-full relative  " style="background-color: rgba(49, 135, 255, 0.566);">
+    <div class="container w-full h-full relative" style="">
         <div class="nav w-full h-[8vh] flex justify-between  px-14 items-center pt-8">
             <div class="left flex gap-4 ">
-                <a class="mt-1" href="/"><span><i class="ri-arrow-left-line font-bold   text-lg "></i></span></a>
-                <p class="mt-2">
+                <a class="mt-1" href="/home"><span><i class="ri-arrow-left-line font-bold   text-lg "></i></span></a>
+                <p class="mt-2 ">
                     <%= formattedDate %>
                 </p>
             </div>
@@ -28,19 +28,19 @@
             </div>
         </div>
 
-        <div class="texts w-full h-[92vh] ">
+        <div class="texts w-full h-[92vh]  ">
 
             <form action="/mynotes/updatenote/<%=editnote._id %>" method="post">
-                <div class="head  w-full px-14 pt-5">
+                <div class="head  w-full px-14 pt-5 text-black">
                     <h3 class="text-xl  font-normal">
-                        <input name="title" style="outline: none; color:whitesmoke;" class="bg-zinc-800 w-full py-3 px-3   border-none cursor-pointer  rounded-3xl" type="text" placeholder="Enter a title">
+                        <input name="title" style="outline: none; " class=" w-full py-3 px-3   border-none cursor-pointer  rounded-3xl" type="text" placeholder="Enter a title">
                     </h3>
 
                 </div>
 
-                <div class="description w-full mt-4  px-1  h-[85%] px-14   overflow-x-hidden overflow-y-auto  ">
+                <div class="description w-full mt-4  px-1  h-[85%] px-14   overflow-x-hidden overflow-y-auto ">
                     <p class="font-normal text-lg">
-                        <textarea name="description" style="outline: none; color:whitesmoke;" class="bg-zinc-800 cursor-pointer  border-nonel rounded-3xl px-4 py-3   w-full h-full  whitespace-nowrap " placeholder="Enter a description"></textarea>
+                        <textarea name="description" style="outline: none;" class=" cursor-pointer  border-nonel rounded-3xl px-4 py-3   w-full h-full  whitespace-nowrap text-black " placeholder="Enter a description"></textarea>
                     </p>
 
 
@@ -50,9 +50,9 @@
                     </div>
 
 
-                    <div class="delete-container hidden  fixed z-50  top-2/4 left-2/4  text-center py-5  overflow-hidden  w-[13vw] h-[8vw]  rounded-lg " style="background-color:white;">
-                        <h3 class="font-medium tracking-tighter">Delete note</h3>
-                        <p>Delete this note?</p>
+                    <div class="delete-container hidden   fixed z-50  top-2/4 left-2/4  text-center py-5  overflow-hidden  w-[13vw] h-[8vw]  rounded-lg " style="background-color:white;">
+                        <h3 class="font-medium tracking-tighter text-black">Delete note</h3>
+                        <p class="text-black">Delete this note?</p>
 
                         <div class="icons mt-3  w-full ">
                             <a id="cancel" class="rounded-3xl  text-zinc-900 px-3 py-1.5 cursor-pointer  text-sm" style="background-color: silver;">Cancel</a>
