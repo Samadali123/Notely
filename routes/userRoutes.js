@@ -5,11 +5,115 @@ const notes = require('../models/notes');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
 const userModel = require("../models/users");
+const GoogleStrategy = require('passport-google-oidc');
+const passport = require('passport');
 const { config } = require('dotenv');
+const { v4: uuidV4 } = require(`uuid`);
+
 //call the environment varibles set in  env
 config();
 
 const secretKey = process.env.JWT_SECRET_KEY;
+
+
+// google strategy code for passport js
+
+// passport.use(new GoogleStrategy({
+//     clientID: process.env['GOOGLE_CLIENT_ID'],
+//     clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
+//     callbackURL: '/oauth2/redirect/google',
+//     scope: ['profile', 'email']
+// }, async function verify(issuer, profile, cb) {
+//     console.log(profile.emails[0].value)
+//     let user = await userModel.findOne({ email: profile.emails[0].value });
+//     if (user) {
+//         const token = jwt.sign({ email: profile.emails[0].value, userid: user._id },
+//             secretKey, { algorithm: 'HS256', expiresIn: '1h' }
+//         );
+
+
+
+//         return cb(null, user);
+//     } else {
+
+//         const salt = await bcrypt.genSalt(10);
+
+//         const password = uuidV4();
+
+//         const hashedPassword = await bcrypt.hash(password, salt);
+//         let newUser = await userModel.create({
+//             username: profile.displayName,
+//             email: profile.emails[0].value,
+//             password: hashedPassword,
+
+//         });
+
+
+//         const token = jwt.sign({ email: profile.emails[0].value, userid: newUser._id },
+//             secretKey, { algorithm: 'HS256', expiresIn: '1h' }
+//         );
+
+
+
+//         await newUser.save();
+//         return cb(null, newUser)
+
+//     }
+// }));
+
+
+passport.use(new GoogleStrategy({
+    clientID: process.env['GOOGLE_CLIENT_ID'],
+    clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
+    callbackURL: '/oauth2/redirect/google',
+    scope: ['profile', 'email'],
+    passReqToCallback: true // Passes req object to the verify callback
+}, async function verify(req, issuer, profile, cb) {
+    console.log(profile.emails[0].value)
+    let user = await userModel.findOne({ email: profile.emails[0].value });
+    if (user) {
+        const token = jwt.sign({ email: profile.emails[0].value, userid: user._id },
+            secretKey, { algorithm: 'HS256', expiresIn: '1h' }
+        );
+
+        // Set token as a cookie using res object from request
+        req.res.cookie('token', token, { maxAge: 3600000, httpOnly: true }); // Expires in 1 hour
+
+        return cb(null, user);
+    } else {
+
+        const salt = await bcrypt.genSalt(10);
+        const password = uuidV4();
+        const hashedPassword = await bcrypt.hash(password, salt);
+        let newUser = await userModel.create({
+            username: profile.displayName,
+            email: profile.emails[0].value,
+            password: hashedPassword,
+        });
+
+        const token = jwt.sign({ email: profile.emails[0].value, userid: newUser._id },
+            secretKey, { algorithm: 'HS256', expiresIn: '1h' }
+        );
+
+        // Set token as a cookie using res object from request
+        req.res.cookie('token', token, { maxAge: 3600000, httpOnly: true }); // Expires in 1 hour
+
+        await newUser.save();
+        return cb(null, newUser)
+    }
+}));
+
+
+
+
+
+
+router.get('/oauth2/redirect/google', passport.authenticate('google', {
+    successRedirect: '/home',
+    failureRedirect: '/login'
+}));
+
+
 
 router.get("/", async(req, res) => {
     try {
@@ -20,11 +124,12 @@ router.get("/", async(req, res) => {
 });
 
 
+router.get('/login/federated/google', passport.authenticate(`google`));
+
+
 router.get("/login", (req, res) => {
     res.render("login")
 })
-
-
 
 
 if (!secretKey) {
@@ -156,7 +261,7 @@ router.get("/home", IsLoggedIn, async(req, res, next) => {
 
 
 
-router.get("/mynotes/create/notes", (req, res) => {
+router.get("/mynotes/create/notes", IsLoggedIn, (req, res) => {
     try {
         // Create a Date object representing the current date and time
         const currentDate = new Date();
@@ -202,7 +307,7 @@ router.get("/mynotes/create/notes", (req, res) => {
 
 
 
-router.post("/mynotes/add/notes", async(req, res) => {
+router.post("/mynotes/add/notes", IsLoggedIn, async(req, res) => {
     const { title, description } = req.body;
 
     try {
@@ -218,7 +323,7 @@ router.post("/mynotes/add/notes", async(req, res) => {
 })
 
 
-router.get('/mynotes/opennote/:noteId', async(req, res) => {
+router.get('/mynotes/opennote/:noteId', IsLoggedIn, async(req, res) => {
     try {
         const opennote = await notesModel.findOne({ _id: req.params.noteId });
 
@@ -249,7 +354,7 @@ router.get('/mynotes/opennote/:noteId', async(req, res) => {
 
 
 
-router.get("/mynotes/deletenote/:noteId", async(req, res) => {
+router.get("/mynotes/deletenote/:noteId", IsLoggedIn, async(req, res) => {
     try {
         const deletedNote = await notesModel.findByIdAndDelete(req.params.noteId);
         res.redirect("/home");
@@ -261,7 +366,7 @@ router.get("/mynotes/deletenote/:noteId", async(req, res) => {
 
 
 
-router.get("/mynotes/editnote/:noteId", async(req, res) => {
+router.get("/mynotes/editnote/:noteId", IsLoggedIn, async(req, res) => {
     try {
 
         const editnote = await notesModel.findOne({ _id: req.params.noteId });
@@ -297,48 +402,7 @@ router.get("/mynotes/editnote/:noteId", async(req, res) => {
 
 
 
-// router.post("/mynotes/updatenote/:noteId", async(req, res) => {
-//     try {
-//         const { title, description } = req.body;
-
-//         // Find the existing note by ID
-//         const existingNote = await notesModel.findById(req.params.noteId);
-
-//         if (!existingNote) {
-//             return res.status(404).json({ success: false, message: "Note not found" });
-//         }
-
-//         // Update logic based on provided data
-//         const updatedNote = {
-//             title: title ? title : existingNote.title, // Update title if provided, otherwise keep existing
-//             description: description ? description : existingNote.description, // Update description if provided, otherwise keep existing
-//             // Handle potential error if previousVersions is not an array
-//             previousVersions: existingNote.previousVersions ? [...existingNote.previousVersions, {
-//                 title: existingNote.title, // Store previous title even if updated
-//                 description: existingNote.description, // Store previous description even if updated
-//                 updatedAt: existingNote.updatedAt,
-//             }] : [], // If not an array, initialize with an empty array
-//             updatedAt: Date.now(),
-//         };
-
-//         // Update the note with the combined data
-//         await notesModel.findByIdAndUpdate(req.params.noteId, updatedNote);
-
-//         // Redirect to /home upon successful update
-//         res.redirect("/home");
-
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ success: false, message: "Something went wrong" });
-//     }
-// });
-
-
-
-
-
-
-router.post("/mynotes/updatenote/:noteId", async(req, res) => {
+router.post("/mynotes/updatenote/:noteId", IsLoggedIn, async(req, res) => {
     try {
         const { title, description } = req.body;
         const existingNote = await notesModel.findById(req.params.noteId);
