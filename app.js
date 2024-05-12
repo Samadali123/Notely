@@ -63,11 +63,8 @@ app.use(`/`, usersRouter);
 
 
 // unknown routes
-app.all("*", function(req, res, next) {
-    res.status(404).json({
-        success: false,
-        message: `${req.url} Not found `
-    });
+app.all("*", function(req, res) {
+    res.status(404).render("error");
 })
 
 

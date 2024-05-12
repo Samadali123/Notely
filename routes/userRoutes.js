@@ -15,52 +15,10 @@ config();
 
 const secretKey = process.env.JWT_SECRET_KEY;
 
-
-// google strategy code for passport js
-
-// passport.use(new GoogleStrategy({
-//     clientID: process.env['GOOGLE_CLIENT_ID'],
-//     clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
-//     callbackURL: '/oauth2/redirect/google',
-//     scope: ['profile', 'email']
-// }, async function verify(issuer, profile, cb) {
-//     console.log(profile.emails[0].value)
-//     let user = await userModel.findOne({ email: profile.emails[0].value });
-//     if (user) {
-//         const token = jwt.sign({ email: profile.emails[0].value, userid: user._id },
-//             secretKey, { algorithm: 'HS256', expiresIn: '1h' }
-//         );
+//passport strategy for goggle authentication
 
 
-
-//         return cb(null, user);
-//     } else {
-
-//         const salt = await bcrypt.genSalt(10);
-
-//         const password = uuidV4();
-
-//         const hashedPassword = await bcrypt.hash(password, salt);
-//         let newUser = await userModel.create({
-//             username: profile.displayName,
-//             email: profile.emails[0].value,
-//             password: hashedPassword,
-
-//         });
-
-
-//         const token = jwt.sign({ email: profile.emails[0].value, userid: newUser._id },
-//             secretKey, { algorithm: 'HS256', expiresIn: '1h' }
-//         );
-
-
-
-//         await newUser.save();
-//         return cb(null, newUser)
-
-//     }
-// }));
-
+router.get('/login/federated/google', passport.authenticate(`google`));
 
 passport.use(new GoogleStrategy({
     clientID: process.env['GOOGLE_CLIENT_ID'],
@@ -104,15 +62,10 @@ passport.use(new GoogleStrategy({
 }));
 
 
-
-
-
-
 router.get('/oauth2/redirect/google', passport.authenticate('google', {
     successRedirect: '/home',
     failureRedirect: '/login'
 }));
-
 
 
 router.get("/", async(req, res) => {
@@ -122,9 +75,6 @@ router.get("/", async(req, res) => {
         res.status(500).json({ success: false, message: "Something went wrong" });
     }
 });
-
-
-router.get('/login/federated/google', passport.authenticate(`google`));
 
 
 router.get("/login", (req, res) => {
@@ -190,13 +140,14 @@ router.post("/Notely/login", async(req, res, ) => {
                 res.cookie("token", token)
                 res.status(401).redirect("/home")
 
-            } else res.status(400).json({ success: false, message: "Please login to your account" })
+            } else res.status(400).render("loginError");
         }
 
     });
 
 
 })
+
 
 
 
