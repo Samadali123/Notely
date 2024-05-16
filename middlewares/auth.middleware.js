@@ -1,3 +1,11 @@
+const jwt = require("jsonwebtoken")
+const { config } = require('dotenv');
+//call the environment varibles set in  env
+config();
+
+
+const secretKey = process.env.JWT_SECRET_KEY;
+
 function IsLoggedIn(req, res, next) {
     const token = req.cookies.token;
     if (!token) {
@@ -12,7 +20,7 @@ function IsLoggedIn(req, res, next) {
     } catch (err) {
 
         console.error('Token verification error:', err);
-        return res.status(401).json({ success: false, message: "Invalid or expired token. Please log in again" });
+        return res.status(401).render("isloggedin")
     }
 }
 
