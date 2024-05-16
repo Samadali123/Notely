@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+
+
 <html lang="en">
 
 <head>
@@ -7,13 +9,58 @@
     <title>Notely | Create notes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        /* Custom styles */
+        
+        @media (min-width: 640px) {
+            .container {
+                padding: 0 1rem;
+            }
+            .nav {
+                padding: 0 1rem;
+            }
+            form {
+                padding: 0 1rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+                margin: 0 auto;
+            }
+            .nav {
+                padding: 0;
+            }
+            form {
+                padding: 0;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1024px;
+            }
+        }
+        
+        @media (min-width: 1280px) {
+            .container {
+                max-width: 1280px;
+            }
+        }
+        
+        input::placeholder,
+        textarea::placeholder {
+            color: white;
+        }
+    </style>
 </head>
 
-<body>
+<body class="bg-gray-900">
 
-    <div class="container w-full h-full relative  bg-gray-50 dark:bg-gray-900 text-white">
-        <div class="nav w-full flex justify-between  px-14 items-center pt-8">
-            <a href="/home"><span><i class="ri-arrow-left-line font-bold   text-lg "></i></span></a>
+    <div class="container w-full h-full relative bg-gray-50 dark:bg-gray-900 text-white">
+        <div class="nav w-full flex justify-between px-14 items-center pt-8">
+            <a href="/Notely/home"><span><i class="ri-arrow-left-line font-bold text-lg"></i></span></a>
 
             <div class="right flex gap-3 items-center">
                 <span id="right" class="font-bold text-lg hidden cursor-pointer">✓</span>
@@ -21,51 +68,32 @@
             </div>
         </div>
 
-        <form class="px-14 mt-7 " action="/mynotes/add/notes" method="post">
+        <form class="px-14 mt-7" action="/Notely/add/notes" method="post">
 
-            <input class="w-11/12 py-2   text-xl outline-0  font-normal tracking-wider bg-transparent  cursor-pointer" type="text" placeholder="Title." name="title">
+            <input class="w-full sm:w-11/12 py-2 text-xl outline-0 font-normal tracking-wider bg-transparent cursor-pointer" type="text" placeholder="Title." name="title">
 
             <p class="mt-5 font-light">
                 <%= formattedDate %>
             </p>
 
-            <textarea class="w-11/12 py-4  pr-4 h-[73vh] outline-offset-0  bg-transparent cursor-pointer  outline-0 text-xl  font-normal tracking-wider " placeholder="Start typing........" name="description"></textarea>
+            <textarea class="w-full sm:w-11/12 py-4 pr-4 h-[73vh] outline-offset-0 bg-transparent cursor-pointer outline-0 text-xl font-normal tracking-wider" placeholder="Start typing........" name="description"></textarea>
 
         </form>
     </div>
 
-
-
-    <style>
-        input::placeholder {
-            color: white;
-        }
-        
-        textarea::placeholder {
-            color: white;
-        }
-    </style>
     <script>
         let right = document.querySelector("#right")
         let form = document.querySelector("form");
         let title = document.querySelector("input")
         let description = document.querySelector("textarea");
 
-
-
-
-
-
         title.addEventListener("input", (dets) => {
             right.style.display = "initial";
         })
 
-
         description.addEventListener("input", (dets) => {
             right.style.display = "initial";
         })
-
-
 
         right.addEventListener("click", (event) => {
             form.submit();

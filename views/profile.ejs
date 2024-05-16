@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notely | Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-900 text-white ">
+
+    <div class="main w-full  bg-gray-900 text-white flex flex-col items-center justify-center  relative  px-4 ">
+        <div class="w-full max-w-md px-4 pt-7">
+            <div class="flex items-center justify-center mb-4">
+                <img class="w-8 h-8 rounded-full mr-2" src="/images/noteslogo.jpg" alt="Notely Logo">
+                <h3 class="text-lg font-semibold">Notely</h3>
+            </div>
+
+            <div class="relative flex justify-center mb-4 mt-2">
+                <img class="w-24 h-24 rounded-full object-cover" src="/images/uploads/<%= loginuser.profile %>" alt="Profile Image">
+            </div>
+
+            <div class="mt-2">
+                <form action="/Notely/edit/profile" class="" enctype="multipart/form-data" method="post">
+                    <input id="file" class="hidden" type="file" name="image">
+                </form>
+
+                <div class="btns text-center">
+                    <button id="edit" class="bg-gray-200 text-gray-900  rounded-lg text-sm px-4 py-2 mr-3" type="button">Edit Profile</button>
+                    <a href="/Notely/logout" class="mt-2"><button class="bg-gray-200 text-gray-900 rounded-lg text-sm px-4 py-2">Logout</button></a>
+                </div>
+            </div>
+        </div>
+
+        <% if(loginuser.notes.length > 0){  %>
+            <div class="container pt-3  max-w-md px-4 mt-4 flex flex-wrap justify-center">
+                <% loginuser.notes.forEach(function(note){  %>
+                    <div class="note relative rounded-2xl w-full p-4 mb-4" style="border:1px solid rgba(255, 255, 255, 0.685);">
+                        <h3 class="text-lg font-medium tracking-wide mb-2">
+                            <%= note.title %>
+                        </h3>
+                        <div class="description h-20 overflow-hidden">
+                            <p class="leading-normal text-sm">
+                                <%= note.description %>
+                            </p>
+                        </div>
+                        <div class="icons flex items-center mt-2">
+                            <a href="/Notely/opennote/<%= note._id %>" class="mr-3"><i class="ri-more-fill"></i></a>
+                            <a href="/Notely/editnote/<%= note._id %>"><i class="ri-edit-circle-line"></i></a>
+                        </div>
+                        <span class="text-xs font-light block mt-2"><%= note.formattedDate %></span>
+                    </div>
+                    <%   })   %>
+            </div>
+            <%  }  else {  %>
+                <p class="text-center w-full mt-4">Sorry, you haven't created any notes.</p>
+                <%   } %>
+    </div>
+
+
+    <style>
+        body::-webkit-scrollbar {
+            display: none;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    </style>
+    <script>
+        const fileInput = document.querySelector("#file");
+        const editBtn = document.querySelector("#edit");
+
+        editBtn.addEventListener("click", function(e) {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener("change", function(ev) {
+            document.querySelector("form").submit();
+        });
+    </script>
+</body>
+
+</html>

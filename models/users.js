@@ -22,8 +22,13 @@ const userSchema = mongoose.Schema({
     },
     profile: {
         type: String,
-    }
+        default: "profile.jpg"
+    },
 
+    notes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'note'
+    }]
 
 });
 

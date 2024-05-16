@@ -10,78 +10,72 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="bg-gray-900 relative text-white">
     <div class="container w-full h-full relative  pt-8  ">
         <nav>
-            <h1 class="text-center  text-2xl font-medium" style="" ">Make your Persnalized notes now</h1>
+
 
             <div class=" buttons w-full flex justify-center items-center gap-6 mt-4 cursor-pointer ">
-                <span><i class=" ri-booklet-fill text-2xl font-medium " style=" color: rgb(205, 195, 50); "></i></span>
+                <span><i class=" ri-booklet-fill text-2xl font-medium text-red-600 " style=" "></i></span>
                 <div class=" rightbox w-[1.5vw] h-[1.5vw] flex justify-center items-center " style=" border: 2px solid black; ">
-                    <p><i class=" ri-check-double-fill "></i></p>
+                    <a href="/Notely/profile">
+                        <p><i class=" ri-check-double-fill "></i></p>
+                    </a>
                 </div>
             </div>
 
-            <div class=" searchbar w-9/12 ml-[12.5%] mt-3 flex items-center gap-3 rounded-full px-4 py-1 text-black " style=" background-color: rgba(192, 192, 192, 0.393); ">
+            <div class=" searchbar w-9/12 ml-[12.5%] mt-3 flex items-center gap-3 rounded-full px-4 py-1 text-black " style=" background-color:whitesmoke; ">
                 <p><i class=" ri-search-2-line "></i></p>
                 <input id="search " class=" w-full outline-0 " type="text " placeholder=" Search notes " style=" background-color: transparent; ">
             </div>
 
+            <h1 class="text-center  text-2xl font-medium mt-6" style="">Make your Persnalized notes now</h1>
+
         </nav>
 
-            <div id="allnotes " class="notes-section cursor-pointer notes flex gap-8 flex-wrap relative p-6 ml-[12.7%] overflow-x-hidden overflow-y-auto w-9/12 mt-4 h-[70vh] rounded-2xl " style=" background-color: rgba(239, 239, 239, 0.688); ">
+        <div id="allnotes " class="notes-section cursor-pointer notes flex gap-8 flex-wrap relative p-6 ml-[12.7%] overflow-x-hidden overflow-y-auto w-9/12 mt-4 h-[70vh] rounded-2xl " style=" ">
 
-                <div class=" addnotebtn fixed z-50 left-[78%] bottom-[20%] w-[3vw] h-[3vw] flex items-center justify-center rounded-full " style=" background-color: rgb(205, 195, 50); ">
-                    <a href=" /mynotes/create/notes "><span><i class=" ri-add-line text-white text-2xl cursor-pointer "></i></span></a>
-                </div>
-
-
-               
-                       <% if(allnotes.length > 0){  %>
-
-                        <% allnotes.forEach(function(elem){ %>
-
-                
-                            <a href="/mynotes/opennote/<%=elem._id %>">
-                <div class="note text-white  relative pt-2  w-[15vmax] h-[10vmax] overflow-x-hidden overflow-y-auto rounded-2xl bg-gray-50 dark:bg-gray-900 mb-3 " style=" ">
+            <div class=" addnotebtn fixed z-50 left-[78%] bottom-[20%] w-[3vw] h-[3vw] flex bg-red-600 items-center justify-center rounded-full " style=" ">
+                <a href=" /Notely/create/notes "><span><i class=" ri-add-line text-white text-2xl cursor-pointer "></i></span></a>
+            </div>
 
 
-                    <h3 class="text-lg  font-medium tracking-wider ml-3 ">
-                        <%= elem.title %>
-                    </h3>
 
-                    <div class=" description w-full h-[55%] pt-2 ">
-                        <p class=" ml-3 leading-none text-lg font-light ">
-                            <%= elem.description %>
-                        </p>
-                    </div>
+            <% if(allnotes.length > 0){  %>
+
+                <% allnotes.forEach(function(elem){ %>
 
 
-                    <div class="icons flex gap-3 items-center  absolute bottom-[12%]  ">
-                        <a id="more " href="/mynotes/opennote/<%=elem._id %>">
-                            <p><i class="ri-more-fill "></i></p>
-                        </a>
-                        <a id="edit " href="/mynotes/editnote/<%=elem._id %> ">
-                            <p><i class="ri-edit-circle-line "></i></p>
-                        </a>
-                    </div>
+
+                    <div class="note text-white relative pt-2 w-[15vmax] h-[10vmax] overflow-x-hidden overflow-y-auto rounded-2xl bg-red-600 mb-3 " style=" ">
 
 
-                    <span class=" ml-3 text-xs font-light absolute bottom-[5%] ">
+                        <h3 class="text-lg font-medium tracking-wider ml-3 ">
+                            <%= elem.title %>
+                        </h3>
+
+                        <div class=" description w-full h-[55%] pt-2 ">
+                            <p class=" ml-3 leading-none text-lg font-light ">
+                                <%= elem.description %>
+                            </p>
+                        </div>
+
+
+                        <span class=" ml-3 text-xs font-light absolute bottom-[5%] ">
                                        <%=  elem.formattedDate %>
                                     </span>
-                </div>
-                </a>
-
-
-                <%   }   ) %>
-                    <%  } else{  %>
-                        <p>Sorry, you have'nt created any notes yet.</p>
-                        <%  } %>
+                    </div>
 
 
 
-    </div>
+                    <%   }   ) %>
+                        <%  } else{  %>
+                            <p>Sorry, you have'nt created any notes yet.</p>
+                            <%  } %>
+
+
+
+        </div>
 
     </div>
 

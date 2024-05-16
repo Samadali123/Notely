@@ -9,6 +9,9 @@ const GoogleStrategy = require('passport-google-oidc');
 const passport = require('passport');
 const { config } = require('dotenv');
 const { v4: uuidV4 } = require(`uuid`);
+const upload = require("../utils/multer");
+
+
 
 //call the environment varibles set in  env
 config();
@@ -63,12 +66,12 @@ passport.use(new GoogleStrategy({
 
 
 router.get('/oauth2/redirect/google', passport.authenticate('google', {
-    successRedirect: '/home',
-    failureRedirect: '/login'
+    successRedirect: '/Notely/home',
+    failureRedirect: '/Notely/login'
 }));
 
 
-router.get("/", async(req, res) => {
+router.get("/Notely", async(req, res) => {
     try {
         res.render('index');
     } catch (err) {
@@ -77,7 +80,7 @@ router.get("/", async(req, res) => {
 });
 
 
-router.get("/login", (req, res) => {
+router.get("/Notely/login", (req, res) => {
     res.render("login")
 })
 
@@ -88,7 +91,7 @@ if (!secretKey) {
 }
 
 
-router.post("/notely/registeraccount", async(req, res) => {
+router.post("/Notely/registeraccount", async(req, res) => {
     try {
         const { username, email, password } = req.body;
         const user = await userModel.findOne({ email });
@@ -115,7 +118,7 @@ router.post("/notely/registeraccount", async(req, res) => {
             sameSite: 'strict'
         });
 
-        res.redirect("/home");
+        res.redirect("/Notely/home");
     } catch (error) {
 
         console.error(error);
@@ -138,7 +141,7 @@ router.post("/Notely/login", async(req, res, ) => {
             if (result) {
                 let token = jwt.sign({ email: user.email, userid: user._id }, secretKey);
                 res.cookie("token", token)
-                res.status(401).redirect("/home")
+                res.status(401).redirect("/Notely/home")
 
             } else res.status(400).render("loginError");
         }
@@ -151,9 +154,9 @@ router.post("/Notely/login", async(req, res, ) => {
 
 
 
-router.get("/logout", (req, res) => {
+router.get("/Notely/logout", (req, res) => {
     res.clearCookie("token");
-    res.redirect("/login")
+    res.redirect("/Notely/login")
 
 })
 
@@ -175,10 +178,53 @@ function IsLoggedIn(req, res, next) {
         return res.status(401).json({ success: false, message: "Invalid or expired token. Please log in again" });
     }
 }
+router.get("/Notely/profile", IsLoggedIn, async(req, res) => {
+    try {
+        const loginuser = await userModel.findOne({ email: req.user.email }).populate("notes");
+        loginuser.notes.forEach((note) => {
+            let date = note.date;
+            let dateObj = new Date(date);
+
+            let monthNames = [
+                '', 'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+
+            let day = dateObj.getDate();
+            let month = dateObj.getMonth() + 1;
+            let year = dateObj.getFullYear();
+
+            let monthName = monthNames[month];
+            let formattedDate = `${monthName} ${day}, ${year}`;
+
+            // Assign the formatted date to a new property in each note
+            note.formattedDate = formattedDate;
+        });
+
+        // Move res.render() outside of the forEach loop
+        res.render("profile", { loginuser });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
 
 
 
-router.get("/home", IsLoggedIn, async(req, res, next) => {
+router.post(`/Notely/edit/profile`, IsLoggedIn, upload.single(`image`), async(req, res, next) => {
+    try {
+        const loginuser = await userModel.findOne({ email: req.user.email });
+        loginuser.profile = req.file.filename;
+        await loginuser.save();
+        res.redirect(`/Notely/profile`);
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+
+})
+
+
+
+router.get("/Notely/home", IsLoggedIn, async(req, res, next) => {
 
     try {
         const allnotes = await notesModel.find();
@@ -212,7 +258,7 @@ router.get("/home", IsLoggedIn, async(req, res, next) => {
 
 
 
-router.get("/mynotes/create/notes", IsLoggedIn, (req, res) => {
+router.get("/Notely/create/notes", IsLoggedIn, (req, res) => {
     try {
         // Create a Date object representing the current date and time
         const currentDate = new Date();
@@ -258,15 +304,21 @@ router.get("/mynotes/create/notes", IsLoggedIn, (req, res) => {
 
 
 
-router.post("/mynotes/add/notes", IsLoggedIn, async(req, res) => {
+router.post("/Notely/add/notes", IsLoggedIn, async(req, res) => {
     const { title, description } = req.body;
 
+    const loginuser = await userModel.findOne({ email: req.user.email });
     try {
         const creatednote = await notesModel.create({
             title,
-            description
+            description,
+            user: loginuser
         });
-        res.redirect("/home")
+
+        loginuser.notes.push(creatednote._id);
+        await loginuser.save();
+
+        res.redirect("/Notely/home")
 
     } catch (err) {
         res.status(500).json({ success: false, message: "Something went wrong" });
@@ -274,7 +326,7 @@ router.post("/mynotes/add/notes", IsLoggedIn, async(req, res) => {
 })
 
 
-router.get('/mynotes/opennote/:noteId', IsLoggedIn, async(req, res) => {
+router.get('/Notely/opennote/:noteId', IsLoggedIn, async(req, res) => {
     try {
         const opennote = await notesModel.findOne({ _id: req.params.noteId });
 
@@ -305,10 +357,10 @@ router.get('/mynotes/opennote/:noteId', IsLoggedIn, async(req, res) => {
 
 
 
-router.get("/mynotes/deletenote/:noteId", IsLoggedIn, async(req, res) => {
+router.get("/Notely/deletenote/:noteId", IsLoggedIn, async(req, res) => {
     try {
         const deletedNote = await notesModel.findByIdAndDelete(req.params.noteId);
-        res.redirect("/home");
+        res.redirect("/Notely/home");
     } catch (error) {
         res.status(500).json({ success: false, message: "Something went wrong" });
     }
@@ -317,7 +369,7 @@ router.get("/mynotes/deletenote/:noteId", IsLoggedIn, async(req, res) => {
 
 
 
-router.get("/mynotes/editnote/:noteId", IsLoggedIn, async(req, res) => {
+router.get("/Notely/editnote/:noteId", IsLoggedIn, async(req, res) => {
     try {
 
         const editnote = await notesModel.findOne({ _id: req.params.noteId });
@@ -353,7 +405,7 @@ router.get("/mynotes/editnote/:noteId", IsLoggedIn, async(req, res) => {
 
 
 
-router.post("/mynotes/updatenote/:noteId", IsLoggedIn, async(req, res) => {
+router.post("/Notely/updatenote/:noteId", IsLoggedIn, async(req, res) => {
     try {
         const { title, description } = req.body;
         const existingNote = await notesModel.findById(req.params.noteId);
@@ -376,7 +428,7 @@ router.post("/mynotes/updatenote/:noteId", IsLoggedIn, async(req, res) => {
         };
 
         await notesModel.findByIdAndUpdate(req.params.noteId, updatedNote);
-        res.redirect("/home");
+        res.redirect("/Notely/home");
 
     } catch (error) {
         console.error(error);
