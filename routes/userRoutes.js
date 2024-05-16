@@ -10,6 +10,9 @@ const passport = require('passport');
 const { config } = require('dotenv');
 const { v4: uuidV4 } = require(`uuid`);
 const upload = require("../utils/multer");
+const IsLoggedIn = require("../middlewares/auth.middleware")
+
+
 
 
 
@@ -75,7 +78,7 @@ router.get("/Notely", async(req, res) => {
     try {
         res.render('index');
     } catch (err) {
-        res.status(500).json({ success: false, message: "Something went wrong" });
+        res.status(500).render("server")
     }
 });
 
@@ -96,7 +99,7 @@ router.post("/Notely/registeraccount", async(req, res) => {
         const { username, email, password } = req.body;
         const user = await userModel.findOne({ email });
         if (user) {
-            return res.status(409).json({ success: false, message: "User is already registered" });
+            return res.status(409).render("user")
         }
 
 
@@ -122,7 +125,7 @@ router.post("/Notely/registeraccount", async(req, res) => {
     } catch (error) {
 
         console.error(error);
-        res.status(500).json({ success: false, message: "Something went wrong" });
+        res.status(500).render("server")
     }
 });
 
@@ -132,7 +135,7 @@ router.post("/Notely/registeraccount", async(req, res) => {
 router.post("/Notely/login", async(req, res, ) => {
     let { email, password } = req.body
     let user = await userModel.findOne({ email })
-    if (!user) return res.status(err.status || 500).json({ success: false, message: "Unable to login,  please try again" })
+    if (!user) return res.status(err.status || 500).render("server");
 
     bcrypt.compare(password, user.password, function(err, result) {
         if (err) {
@@ -161,23 +164,6 @@ router.get("/Notely/logout", (req, res) => {
 })
 
 
-
-function IsLoggedIn(req, res, next) {
-    const token = req.cookies.token;
-    if (!token) {
-        return res.status(401).json({ success: false, message: "You must be logged in to access this resource" });
-    }
-
-    try {
-        const data = jwt.verify(token, secretKey);
-        req.user = data;
-        next();
-    } catch (err) {
-
-        console.error('Token verification error:', err);
-        return res.status(401).json({ success: false, message: "Invalid or expired token. Please log in again" });
-    }
-}
 router.get("/Notely/profile", IsLoggedIn, async(req, res) => {
     try {
         const loginuser = await userModel.findOne({ email: req.user.email }).populate("notes");
@@ -204,10 +190,9 @@ router.get("/Notely/profile", IsLoggedIn, async(req, res) => {
         // Move res.render() outside of the forEach loop
         res.render("profile", { loginuser });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).render("server")
     }
 });
-
 
 
 router.post(`/Notely/edit/profile`, IsLoggedIn, upload.single(`image`), async(req, res, next) => {
@@ -217,7 +202,7 @@ router.post(`/Notely/edit/profile`, IsLoggedIn, upload.single(`image`), async(re
         await loginuser.save();
         res.redirect(`/Notely/profile`);
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        res.status(500).render("server")
     }
 
 })
@@ -251,7 +236,7 @@ router.get("/Notely/home", IsLoggedIn, async(req, res, next) => {
         });
         res.render('home', { allnotes });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Something went wrong" });
+        res.status(500).render("server")
     }
 
 })
@@ -297,7 +282,7 @@ router.get("/Notely/create/notes", IsLoggedIn, (req, res) => {
         res.render('notes', { formattedDate })
 
     } catch (error) {
-        res.status(500).json({ success: false, message: "Something went wrong" })
+        res.status(500).render("server")
     }
 })
 
@@ -321,7 +306,7 @@ router.post("/Notely/add/notes", IsLoggedIn, async(req, res) => {
         res.redirect("/Notely/home")
 
     } catch (err) {
-        res.status(500).json({ success: false, message: "Something went wrong" });
+        res.status(500).render("server")
     }
 })
 
@@ -350,7 +335,7 @@ router.get('/Notely/opennote/:noteId', IsLoggedIn, async(req, res) => {
         res.render("opennote", { opennote, formattedDate });
 
     } catch (error) {
-        res.status(500).json({ success: false, message: "Something went wrong" });
+        res.status(500).render("server")
 
     }
 })
@@ -362,7 +347,7 @@ router.get("/Notely/deletenote/:noteId", IsLoggedIn, async(req, res) => {
         const deletedNote = await notesModel.findByIdAndDelete(req.params.noteId);
         res.redirect("/Notely/home");
     } catch (error) {
-        res.status(500).json({ success: false, message: "Something went wrong" });
+        res.status(500).render("server")
     }
 })
 
@@ -394,14 +379,10 @@ router.get("/Notely/editnote/:noteId", IsLoggedIn, async(req, res) => {
         res.render("editnote", { editnote, formattedDate });
 
     } catch (error) {
-        res.status(500).json({ success: false, message: "Something wen wrong." })
+        res.status(500).render("server")
     }
 
 })
-
-
-
-
 
 
 
@@ -432,7 +413,7 @@ router.post("/Notely/updatenote/:noteId", IsLoggedIn, async(req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: "Something went wrong" });
+        res.status(500).render("server")
     }
 });
 
