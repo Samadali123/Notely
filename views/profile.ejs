@@ -18,9 +18,13 @@
                 <h3 class="text-lg font-semibold">Notely</h3>
             </div>
 
+
             <div class="relative flex justify-center mb-4 mt-2">
                 <img class="w-24 h-24 rounded-full object-cover" src="/images/uploads/<%= loginuser.profile %>" alt="Profile Image">
             </div>
+
+            <h4 class="text-center font-medium capitalize mb-3 mt-1">Welcome
+                <%= loginuser.username %> in Notely. </h4>
 
             <div class="mt-2">
                 <form action="/Notely/edit/profile" class="" enctype="multipart/form-data" method="post">

@@ -25,6 +25,8 @@ const opennoteController = require('../controllers/opennotes.controller');
 const deletenoteController = require('../controllers/deletenote.controller');
 const editpage = require('../controllers/editnotepage.controller');
 const editnoteController = require('../controllers/editnote.controller');
+const nodemailer = require("nodemailer");
+const { restart } = require('nodemon');
 
 
 //call the environment varibles set in  env
@@ -133,6 +135,136 @@ router.get("/Notely/editnote/:noteId", IsLoggedIn, editpage)
 
 
 router.post("/Notely/updatenote/:noteId", IsLoggedIn, editnoteController);
+
+
+
+router.get(`/Notely/search/notes`, IsLoggedIn, async(req, res) => {
+    try {
+        const input = req.query.data;
+        const regex = new RegExp(`^${input}`, 'i');
+        const notes = await notesModel.find({ title: regex });
+        if (notes.length > 0) {
+            notes.forEach((note) => {
+                let date = note.date;
+                let dateObj = new Date(date);
+                let monthNames = [
+                    '', 'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+                let day = dateObj.getDate();
+                let month = dateObj.getMonth() + 1;
+                let year = dateObj.getFullYear();
+                let monthName = monthNames[month];
+                let formattedDate = `${monthName} ${day}, ${year}`;
+                note.formattedDate = formattedDate;
+            });
+
+        }
+        res.json(notes);
+
+    } catch (err) {
+        res.status(500).render("server");
+    }
+});
+
+
+
+
+router.get("/Notely/forgotpassword", (req, res, next) => {
+    res.render("forgotpassword", )
+
+})
+
+
+router.post("/Notely/forgotpassword", async(req, res, next) => {
+
+    const { email } = req.body;
+    const User = await userModel.findOne({ email })
+
+    if (!User) {
+        return res.status(403).json({ success: false, message: "User not found" })
+    } else {
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.Email,
+                pass: process.env.Password
+            }
+        });
+
+
+        var mailOptions = {
+            from: process.env.Email, // Use the email you want to send from
+            to: email, // Make sure this field matches the recipient's email
+            subject: `Forget your Notely Password? Reset now using link given below`,
+            html: `
+                    <a style="color: royalblue; font-size:18px; font-weight:600; text-decoration:none;" href="http://localhost:8080/Notely/resetpassword">Reset Password</a>
+                `
+        }
+
+
+        transporter.sendMail(mailOptions, function(error, info) {
+            if (error) {
+                return res.send(error)
+            }
+            res.redirect("/Notely/Email/sent/successfully");
+        })
+    }
+
+
+})
+
+
+router.get("/Notely/Email/sent/successfully", (req, res) => {
+    res.render("sentmail")
+})
+
+router.get('/Notely/resetpassword', (req, res) => {
+    res.render("resetpassword")
+})
+
+
+
+router.post('/Notely/resetpassword', async(req, res) => {
+    try {
+        const { email, newPassword } = req.body; // Assuming newPassword is sent in the request
+        const User = await userModel.findOne({ email });
+
+        if (!User) {
+            return res.json({ error: "User not Found" });
+        }
+
+        // Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update the user's password
+        const updatedUser = await userModel.findOneAndUpdate({ _id: User._id }, // Target the user by ID
+            { password: hashedNewPassword }, { new: true }
+        );
+
+        // Generate JWT token
+        const token = jwt.sign({ email: User.email, userid: User._id },
+            secretKey, { algorithm: 'HS256', expiresIn: '1h' }
+        );
+
+        // Set the JWT token in a cookie
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+
+        // Redirect to the homepage or another page
+        res.redirect("/Notely/home"); // Uncomment or adjust as needed
+
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(500).send('An error occurred during the password reset process.'); // Send a more informative message
+    }
+});
+
 
 
 

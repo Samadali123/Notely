@@ -24,16 +24,17 @@
                 </div>
             </div>
 
-            <div class=" searchbar w-9/12 ml-[12.5%] mt-3 flex items-center gap-3 rounded-full px-4 py-1 text-black " style=" background-color:whitesmoke; ">
+            <div class="searchbar w-9/12 ml-[12.5%] mt-3 flex items-center gap-3 rounded-full px-4 py-1 text-black " style=" background-color:whitesmoke; ">
                 <p><i class=" ri-search-2-line "></i></p>
-                <input id="search " class=" w-full outline-0 " type="text " placeholder=" Search notes " style=" background-color: transparent; ">
+                <input id="search " class=" w-full outline-0 cursor-pointer " type="text " placeholder=" Search notes " style=" background-color: transparent; ">
+                <p><i id="cancel" class="ri-close-circle-fill hidden text-2xl text-red-600"></i></p>
             </div>
 
             <h1 class="text-center  text-2xl font-medium mt-6" style="">Make your Persnalized notes now</h1>
 
         </nav>
 
-        <div id="allnotes " class="notes-section cursor-pointer notes flex gap-8 flex-wrap relative p-6 ml-[12.7%] overflow-x-hidden overflow-y-auto w-9/12 mt-4 h-[70vh] rounded-2xl " style=" ">
+        <div id="allnotes" class="notes-section cursor-pointer notes flex gap-8 flex-wrap relative p-6 ml-[12.7%] overflow-x-hidden overflow-y-auto w-9/12 mt-4 h-[70vh] rounded-2xl " style=" ">
 
             <div class=" addnotebtn fixed z-50 left-[78%] bottom-[20%] w-[3vw] h-[3vw] flex bg-red-600 items-center justify-center rounded-full " style=" ">
                 <a href=" /Notely/create/notes "><span><i class=" ri-add-line text-white text-2xl cursor-pointer "></i></span></a>
@@ -45,9 +46,7 @@
 
                 <% allnotes.forEach(function(elem){ %>
 
-
-
-                    <div class="note text-white relative pt-2 w-[15vmax] h-[10vmax] overflow-x-hidden overflow-y-auto rounded-2xl bg-red-600 mb-3 " style=" ">
+                    <div class="note text-white relative pt-2 w-[15vmax] h-[10vmax] overflow-x-hidden overflow-y-auto rounded-2xl bg-red-600 mb-1 " style=" ">
 
 
                         <h3 class="text-lg font-medium tracking-wider ml-3 ">
@@ -75,7 +74,16 @@
 
 
 
+
+
         </div>
+
+
+        <div id="searchnotes" class="notes-section hidden cursor-pointer notes flex gap-8 flex-wrap relative p-6 ml-[12.7%] overflow-x-hidden overflow-y-auto w-9/12 mt-4 h-[70vh] rounded-2xl " style=" ">
+
+            <p id="message" class="hidden">No Search notes were found!</p>
+        </div>
+
 
     </div>
 
@@ -122,7 +130,65 @@
     </style>
 
     <script>
+        let cancelButton = document.querySelector("#cancel");
+        let SearchInput = document.querySelector("input");
+
+
+
+        SearchInput.addEventListener("input", function(e) {
+            let data = SearchInput.value;
+            cancelButton.style.display = "block";
+            document.querySelector("#allnotes").style.display = "none";
+            document.querySelector("#searchnotes").classList.remove("hidden");
+
+            axios.get('/Notely/search/notes', {
+                    params: {
+                        data: data
+                    }
+                })
+                .then(function(response) {
+                    let clutter = "";
+                    if (response.data.length > 0) {
+                        response.data.forEach(function(note) {
+                            clutter += `   <div class="note text-white relative pt-2 w-[15vmax] h-[10vmax] overflow-x-hidden overflow-y-auto rounded-2xl bg-red-600 mb-1 " style=" ">
+                                    <h3 class="text-lg font-medium tracking-wider ml-3 ">
+                                        ${note.title}
+                                    </h3>
+                    
+                                    <div class=" description w-full h-[55%] pt-2 ">
+                                        <p class=" ml-3 leading-none text-lg font-light ">
+                                        ${note.description}
+                                        </p>
+                                    </div>
+                    
+                    
+                                </div>`
+                        })
+
+                        document.querySelector("#searchnotes").innerHTML = clutter;
+
+                    } else {
+                        document.querySelector("#message").style.display = "block";
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching search results:', error);
+                });
+        });
+
+
+
+
+        cancelButton.addEventListener("click", function(dets) {
+            document.querySelector("#searchnotes").classList.add("hidden");
+            document.querySelector("#allnotes").style.display = "flex";
+            SearchInput.value = "";
+
+        });
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js" integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </body>
 
