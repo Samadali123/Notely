@@ -1,7 +1,7 @@
-const LogoutController = (req, res) => {
+const logout = (req, res) => {
     res.clearCookie("token");
     res.redirect("/Notely/login")
 
 }
 
-module.exports = LogoutController;
+module.exports = logout;

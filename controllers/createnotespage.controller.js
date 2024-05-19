@@ -1,4 +1,4 @@
-const createnotespage = (req, res) => {
+const createpage = (req, res) => {
     try {
         // Create a Date object representing the current date and time
         const currentDate = new Date();
@@ -43,4 +43,4 @@ const createnotespage = (req, res) => {
 
 
 
-module.exports = createnotespage;
+module.exports = createpage;

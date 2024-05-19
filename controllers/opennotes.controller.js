@@ -1,6 +1,6 @@
 const notesModel = require("../models/notes")
 
-const opennoteController = async(req, res) => {
+const opennote = async(req, res) => {
     try {
         const opennote = await notesModel.findOne({ _id: req.params.noteId });
 
@@ -30,4 +30,4 @@ const opennoteController = async(req, res) => {
 }
 
 
-module.exports = opennoteController;
+module.exports = opennote;

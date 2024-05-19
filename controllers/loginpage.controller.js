@@ -1,6 +1,6 @@
-const LoginpageController = (req, res) => {
+const loginpage = (req, res) => {
     res.render("login")
 }
 
 
-module.exports = LoginpageController;
+module.exports = loginpage;

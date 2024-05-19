@@ -1,6 +1,6 @@
 const notesModel = require("../models/notes")
 
-const deletenoteController = async(req, res) => {
+const deletenote = async(req, res) => {
     try {
         const deletedNote = await notesModel.findByIdAndDelete(req.params.noteId);
         res.redirect("/Notely/profile");
@@ -12,4 +12,4 @@ const deletenoteController = async(req, res) => {
 }
 
 
-module.exports = deletenoteController;
+module.exports = deletenote;

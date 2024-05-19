@@ -1,6 +1,6 @@
 const notesModel = require("../models/notes")
 
-const editnoteController = async(req, res) => {
+const editnote = async(req, res) => {
     try {
         const { title, description } = req.body;
         const existingNote = await notesModel.findById(req.params.noteId);
@@ -33,4 +33,4 @@ const editnoteController = async(req, res) => {
 
 
 
-module.exports = editnoteController;
+module.exports = editnote;

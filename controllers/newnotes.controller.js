@@ -1,7 +1,7 @@
 const userModel = require("../models/users")
 const notesModel = require("../models/notes")
 
-const addNotesController = async(req, res) => {
+const addnotes = async(req, res) => {
     const { title, description } = req.body;
 
     const loginuser = await userModel.findOne({ email: req.user.email });
@@ -23,4 +23,4 @@ const addNotesController = async(req, res) => {
 }
 
 
-module.exports = addNotesController;
+module.exports = addnotes;

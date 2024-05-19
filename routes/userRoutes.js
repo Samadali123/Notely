@@ -11,41 +11,47 @@ const { config } = require('dotenv');
 const { v4: uuidV4 } = require(`uuid`);
 const upload = require("../utils/multer");
 const IsLoggedIn = require("../middlewares/auth.middleware")
-const indexController = require("../controllers/index.controller")
-const loginController = require("../controllers/loginpage.controller")
-const registeraccount = require("../controllers/regiter.controller")
-const loginaccount = require("../controllers/login.controller")
-const logout = require("../controllers/logout.controller");
-const profilecontroller = require('../controllers/profile.controller');
-const home = require("../controllers/home.controller");
-const editprofileController = require('../controllers/editprofile.controller');
-const createnotespage = require('../controllers/createnotespage.controller');
-const addNotesController = require('../controllers/newnotes.controller');
-const opennoteController = require('../controllers/opennotes.controller');
-const deletenoteController = require('../controllers/deletenote.controller');
-const editpage = require('../controllers/editnotepage.controller');
-const editnoteController = require('../controllers/editnote.controller');
+const IndexController = require("../controllers/index.controller")
+const LoginController = require("../controllers/loginpage.controller")
+const RegisterAccountController = require("../controllers/regiter.controller")
+const LoginAccountController = require("../controllers/login.controller")
+const LogoutController = require("../controllers/logout.controller");
+const ProfileController = require('../controllers/profile.controller');
+const HomeController = require("../controllers/home.controller");
+const EditProfileController = require('../controllers/editprofile.controller');
+const CreateNotesController = require('../controllers/createnotespage.controller');
+const AddNotesController = require('../controllers/newnotes.controller');
+const OpenNoteController = require('../controllers/opennotes.controller');
+const DeleteNoteController = require('../controllers/deletenote.controller');
+const EditPageController = require('../controllers/editnotepage.controller');
+const EditNoteController = require('../controllers/editnote.controller');
 const nodemailer = require("nodemailer");
 const { restart } = require('nodemon');
+const SearchNotesController = require("../controllers/searchnotes.controller")
+const ForgotPasswordPageController = require("../controllers/forgot.controller")
+const ForgotPasswordController = require("../controllers/forgotpassword.controller")
+const ResetPageController = require("../controllers/resetpage.controller")
+const ResetPasswordController = require("../controllers/resetpassword.controller")
+const EmailSentPageController = require("../controllers/MailPage.controller")
+
 
 
 //call the environment varibles set in  env
-config();
 
 const secretKey = process.env.JWT_SECRET_KEY;
 // index Api
-router.get("/Notely", indexController);
+router.get("/Notely", IndexController);
 
 //  login page Api
-router.get("/Notely/login", loginController)
+router.get("/Notely/login", LoginController)
 
 
 // Regiter account Api
-router.post("/Notely/registeraccount", registeraccount);
+router.post("/Notely/registeraccount", RegisterAccountController);
 
 
 // Login Api
-router.post("/Notely/login", loginaccount)
+router.post("/Notely/login", LoginAccountController)
 
 // Login with Google Api
 router.get('/login/federated/google', passport.authenticate('google'));
@@ -100,170 +106,65 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
 
 
 //Logout Api
-router.get("/Notely/logout", logout)
+router.get("/Notely/logout", LogoutController)
 
 // Home APi
-router.get("/Notely/home", IsLoggedIn, home)
+router.get("/Notely/home", IsLoggedIn, HomeController)
 
 // Profile Api
-router.get("/Notely/profile", IsLoggedIn, profilecontroller);
+router.get("/Notely/profile", IsLoggedIn, ProfileController);
 
 
 // Edit profile Api
-router.post(`/Notely/edit/profile`, IsLoggedIn, upload.single('image'), editprofileController)
+router.post(`/Notely/edit/profile`, IsLoggedIn, upload.single('image'), EditProfileController)
 
 //Create Notes page Api
-router.get("/Notely/create/notes", IsLoggedIn, createnotespage)
+router.get("/Notely/create/notes", IsLoggedIn, CreateNotesController)
 
 
 // Make new Notes Api
-router.post("/Notely/add/notes", IsLoggedIn, addNotesController)
+router.post("/Notely/add/notes", IsLoggedIn, AddNotesController)
 
 
 //Open note Api
-router.get('/Notely/opennote/:noteId', IsLoggedIn, opennoteController)
+router.get('/Notely/opennote/:noteId', IsLoggedIn, OpenNoteController)
 
 
 // Delete note Api
-router.get("/Notely/deletenote/:noteId", IsLoggedIn, deletenoteController)
+router.get("/Notely/deletenote/:noteId", IsLoggedIn, DeleteNoteController)
 
 
 
 
-router.get("/Notely/editnote/:noteId", IsLoggedIn, editpage)
+router.get("/Notely/editnote/:noteId", IsLoggedIn, EditPageController)
 
 
 
-router.post("/Notely/updatenote/:noteId", IsLoggedIn, editnoteController);
+router.post("/Notely/updatenote/:noteId", IsLoggedIn, EditNoteController);
 
 
 
-router.get(`/Notely/search/notes`, IsLoggedIn, async(req, res) => {
-    try {
-        const input = req.query.data;
-        const regex = new RegExp(`^${input}`, 'i');
-        const notes = await notesModel.find({ title: regex });
-        if (notes.length > 0) {
-            notes.forEach((note) => {
-                let date = note.date;
-                let dateObj = new Date(date);
-                let monthNames = [
-                    '', 'January', 'February', 'March', 'April', 'May', 'June',
-                    'July', 'August', 'September', 'October', 'November', 'December'
-                ];
-                let day = dateObj.getDate();
-                let month = dateObj.getMonth() + 1;
-                let year = dateObj.getFullYear();
-                let monthName = monthNames[month];
-                let formattedDate = `${monthName} ${day}, ${year}`;
-                note.formattedDate = formattedDate;
-            });
-
-        }
-        res.json(notes);
-
-    } catch (err) {
-        res.status(500).render("server");
-    }
-});
+router.get(`/Notely/search/notes`, IsLoggedIn, SearchNotesController);
 
 
 
-
-router.get("/Notely/forgotpassword", (req, res, next) => {
-    res.render("forgotpassword", )
-
-})
-
-
-router.post("/Notely/forgotpassword", async(req, res, next) => {
-
-    const { email } = req.body;
-    const User = await userModel.findOne({ email })
-
-    if (!User) {
-        return res.status(403).json({ success: false, message: "User not found" })
-    } else {
-
-        var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.Email,
-                pass: process.env.Password
-            }
-        });
-
-
-        var mailOptions = {
-            from: process.env.Email, // Use the email you want to send from
-            to: email, // Make sure this field matches the recipient's email
-            subject: `Forget your Notely Password? Reset now using link given below`,
-            html: `
-                    <a style="color: royalblue; font-size:18px; font-weight:600; text-decoration:none;" href="http://localhost:8080/Notely/resetpassword">Reset Password</a>
-                `
-        }
-
-
-        transporter.sendMail(mailOptions, function(error, info) {
-            if (error) {
-                return res.send(error)
-            }
-            res.redirect("/Notely/Email/sent/successfully");
-        })
-    }
-
-
-})
-
-
-router.get("/Notely/Email/sent/successfully", (req, res) => {
-    res.render("sentmail")
-})
-
-router.get('/Notely/resetpassword', (req, res) => {
-    res.render("resetpassword")
-})
+router.get("/Notely/forgotpassword", ForgotPasswordPageController)
 
 
 
-router.post('/Notely/resetpassword', async(req, res) => {
-    try {
-        const { email, newPassword } = req.body; // Assuming newPassword is sent in the request
-        const User = await userModel.findOne({ email });
+router.post("/Notely/forgotpassword", ForgotPasswordController)
 
-        if (!User) {
-            return res.json({ error: "User not Found" });
-        }
 
-        // Hash the new password
-        const salt = await bcrypt.genSalt(10);
-        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
 
-        // Update the user's password
-        const updatedUser = await userModel.findOneAndUpdate({ _id: User._id }, // Target the user by ID
-            { password: hashedNewPassword }, { new: true }
-        );
+router.get("/Notely/Email/sent/successfully", EmailSentPageController)
 
-        // Generate JWT token
-        const token = jwt.sign({ email: User.email, userid: User._id },
-            secretKey, { algorithm: 'HS256', expiresIn: '1h' }
-        );
 
-        // Set the JWT token in a cookie
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
-        });
 
-        // Redirect to the homepage or another page
-        res.redirect("/Notely/home"); // Uncomment or adjust as needed
+router.get('/Notely/resetpassword', ResetPageController)
 
-    } catch (error) {
-        console.error(error); // Log the error for debugging
-        res.status(500).send('An error occurred during the password reset process.'); // Send a more informative message
-    }
-});
+
+
+router.post('/Notely/resetpassword', ResetPasswordController);
 
 
 

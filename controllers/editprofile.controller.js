@@ -1,6 +1,6 @@
 const userModel = require("../models/users")
 
-const editprofileController = async(req, res, next) => {
+const editprofile = async(req, res, next) => {
     try {
         const loginuser = await userModel.findOne({ email: req.user.email });
         loginuser.profile = req.file.filename;
@@ -12,4 +12,4 @@ const editprofileController = async(req, res, next) => {
 
 }
 
-module.exports = editprofileController;
+module.exports = editprofile;

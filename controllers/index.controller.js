@@ -1,4 +1,4 @@
-const indexController = async(req, res) => {
+const indexpage = async(req, res) => {
     try {
         res.render('index');
     } catch (err) {
@@ -7,4 +7,4 @@ const indexController = async(req, res) => {
 }
 
 
-module.exports = indexController;
+module.exports = indexpage;

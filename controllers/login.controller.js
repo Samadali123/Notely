@@ -5,7 +5,7 @@ const userModel = require("../models/users");
 
 const secretKey = process.env.JWT_SECRET_KEY;
 
-const LoginAccountController = async(req, res, err) => {
+const Login = async(req, res, err) => {
     let { email, password } = req.body
     let user = await userModel.findOne({ email })
     if (!user) return res.status(err.status || 500).render("server");
@@ -28,4 +28,4 @@ const LoginAccountController = async(req, res, err) => {
 }
 
 
-module.exports = LoginAccountController;
+module.exports = Login;

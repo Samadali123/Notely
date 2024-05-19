@@ -2,7 +2,7 @@ const userModel = require("../models/users")
 const notesModel = require("../models/notes")
 
 
-const homeController = async(req, res, next) => {
+const home = async(req, res, next) => {
 
     try {
         const allnotes = await notesModel.find();
@@ -35,4 +35,4 @@ const homeController = async(req, res, next) => {
 }
 
 
-module.exports = homeController;
+module.exports = home;

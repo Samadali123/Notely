@@ -2,7 +2,7 @@ const userModel = require("../models/users")
 
 
 
-const profilecontroller = async(req, res) => {
+const profile = async(req, res) => {
     try {
         const loginuser = await userModel.findOne({ email: req.user.email }).populate("notes");
         loginuser.notes.forEach((note) => {
@@ -33,4 +33,4 @@ const profilecontroller = async(req, res) => {
 }
 
 
-module.exports = profilecontroller;
+module.exports = profile;
