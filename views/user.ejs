@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+
+
 <html lang="en">
 
 <head>
@@ -6,16 +8,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notely | Already Registered</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #1f2937;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .heading {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        
+        .text {
+            font-size: 1.2rem;
+            color: #d1d5db;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #2563eb;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #1e40af;
+        }
+        
+        @media (max-width: 768px) {
+            .heading {
+                font-size: 1.5rem;
+            }
+            .text {
+                font-size: 1rem;
+            }
+            .btn {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-gray-900 min-h-screen flex justify-center items-center">
-    <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-        <div class="mx-auto max-w-screen-sm text-center">
-            <h1 class="mb-7 text-3xl md:text-5xl lg:text-7xl font-extrabold tracking-tight text-white">Already Registered</h1>
-            <p class="mb-4 text-lg md:text-xl font-light text-gray-500 dark:text-gray-400">It looks like you've already registered Please log in to continue.</p>
-            <a href="/Notely/login" class="inline-block text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-sm md:text-base px-4 md:px-6 py-2 md:py-2 text-center dark:focus:ring-blue-900 my-4">Log In</a>
+    <section class="section">
+        <div class="container">
+            <div class="text-center">
+                <h1 class="heading">Already Registered</h1>
+                <p class="text">It looks like you've already registered. Please log in to continue.</p>
+                <a href="/Notely/login" class="btn">Log In</a>
+            </div>
         </div>
-    </div>
+    </section>
 </body>
 
 </html>

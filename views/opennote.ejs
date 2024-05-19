@@ -1,4 +1,7 @@
-<!-- <!DOCTYPE html>
+<!-- 
+
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -11,53 +14,47 @@
 
 <body class="bg-gray-900">
 
-    <div class="container w-full h-full relative bg-gray-50 dark:bg-gray-900 text-white  " style="">
-        <div class="nav w-full h-[8vh] flex justify-between  px-14 items-center pt-8">
-            <a href="/home"><span><i class="ri-arrow-left-line font-bold   text-lg "></i></span></a>
+    <div class="container w-full h-full relative bg-gray-50 dark:bg-gray-900 text-white">
+        <div class="nav w-full h-16 flex justify-between items-center px-4 lg:px-14 pt-8">
+            <a href="/Notely/home"><span><i class="ri-arrow-left-line text-red-600 font-bold text-lg"></i></span></a>
 
             <div class="right flex gap-3 items-center">
-                <span id="delete" class="font-bold text-lg  cursor-pointer">
+                <span id="delete" class="font-bold text-lg cursor-pointer">
                     <i id="deleteicon" class="ri-delete-bin-7-line"></i>
                 </span>
-
             </div>
         </div>
 
-        <div class="texts w-full h-[92vh] ">
-
-            <div class="head  w-full px-14 pt-5">
-                <h3 class="text-2xl font-normal tracking-wider ">
+        <div class="texts w-full h-[calc(100% - 4rem)]">
+            <div class="head w-full px-4 lg:px-14 pt-5">
+                <h3 class="text-2xl font-normal tracking-wider">
                     <%= opennote.title %>
                 </h3>
-
-                <p class="mt-2 font-light ">
+                <p class="mt-2 font-light">
                     <%= formattedDate %>
                 </p>
             </div>
 
-            <div class="description w-full mt-4  px-1  h-[85%] px-14   overflow-x-hidden overflow-y-auto  ">
-                <p class="font-normal tracking-wider text-lg">
+            <div class="description w-full mt-4 px-4 lg:px-14 h-[85%] overflow-x-hidden overflow-y-auto">
+                <p class="font-normal tracking-normal text-lg">
                     <%= opennote.description %>
                 </p>
 
-                <div class="delete-container  hidden text-black  fixed z-50  top-2/4 left-2/4  text-center py-5  overflow-hidden  w-[13vw] h-[8vw]  rounded-lg " style="background-color:white;">
-                    <h3 class="font-medium tracking-tighter" style="">Delete note</h3>
+                <div class="delete-container hidden text-black fixed z-50 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center py-5 w-full max-w-[14rem] lg:w-[16rem] h-auto rounded-lg bg-white shadow-md">
+                    <h3 class="font-medium tracking-tighter">Delete note</h3>
                     <p>Delete this note?</p>
-
-                    <div class="icons mt-3  w-full ">
-                        <button id="cancel" class="rounded-3xl   px-3 py-1  text-sm" style="background-color: silver;">Cancel</button>
-                        <button id="delete" class="rounded-3xl   px-3 py-1 text-white  text-sm ml-3" style="background-color:royalblue;">
-                            <a href="/mynotes/deletenote/<%= opennote._id %>">Delete</a>
+                    <div class="icons mt-3">
+                        <button id="cancel" class="rounded-3xl px-3 py-1 text-sm bg-gray-200">Cancel</button>
+                        <button id="delete" class="rounded-3xl px-3 py-1 text-white text-sm ml-3 bg-red-600">
+                            <a href="/Notely/deletenote/<%= opennote._id %>">Delete</a>
                         </button>
                     </div>
                 </div>
+
+
             </div>
-
         </div>
-
-
     </div>
-
 
     <style>
         * {
@@ -81,9 +78,7 @@
     <script>
         document.querySelector("#cancel").addEventListener("click", function() {
             document.querySelector(".delete-container").style.display = "none";
-
         })
-
 
         document.querySelector("#deleteicon").addEventListener("click", function(e) {
             document.querySelector(".delete-container").style.display = "initial";
@@ -91,9 +86,7 @@
     </script>
 </body>
 
-</html> -->
-
-
+</html>  -->
 
 
 <!DOCTYPE html>
@@ -111,7 +104,7 @@
 
     <div class="container w-full h-full relative bg-gray-50 dark:bg-gray-900 text-white">
         <div class="nav w-full h-16 flex justify-between items-center px-4 lg:px-14 pt-8">
-            <a href="/Notely/home"><span><i class="ri-arrow-left-line font-bold text-lg"></i></span></a>
+            <a href="/Notely/profile"><span><i class="ri-arrow-left-line text-red-600 font-bold text-lg"></i></span></a>
 
             <div class="right flex gap-3 items-center">
                 <span id="delete" class="font-bold text-lg cursor-pointer">

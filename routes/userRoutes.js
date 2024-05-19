@@ -106,7 +106,7 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
 
 
 //Logout Api
-router.get("/Notely/logout", LogoutController)
+router.get("/Notely/logout", IsLoggedIn, LogoutController)
 
 // Home APi
 router.get("/Notely/home", IsLoggedIn, HomeController)
@@ -135,35 +135,35 @@ router.get("/Notely/deletenote/:noteId", IsLoggedIn, DeleteNoteController)
 
 
 
-
+// Edit Note Api
 router.get("/Notely/editnote/:noteId", IsLoggedIn, EditPageController)
 
 
-
+//Update Note Api
 router.post("/Notely/updatenote/:noteId", IsLoggedIn, EditNoteController);
 
 
-
+//Search Note Api
 router.get(`/Notely/search/notes`, IsLoggedIn, SearchNotesController);
 
 
-
+//forgot password page Api
 router.get("/Notely/forgotpassword", ForgotPasswordPageController)
 
 
-
+// Forgot Password Api
 router.post("/Notely/forgotpassword", ForgotPasswordController)
 
 
-
+// Email Sent Success Api
 router.get("/Notely/Email/sent/successfully", EmailSentPageController)
 
 
-
+// Reset Page Api
 router.get('/Notely/resetpassword', ResetPageController)
 
 
-
+// Reset passworr Api
 router.post('/Notely/resetpassword', ResetPasswordController);
 
 

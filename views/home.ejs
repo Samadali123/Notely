@@ -1,139 +1,86 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notely | Home </title>
+    <title>Notely | Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
 </head>
 
-<body class="bg-gray-900 relative text-white">
-    <div class="container w-full h-full relative  pt-8  ">
+<body class="bg-gray-900 text-white">
+    <div class="container mx-auto p-4">
         <nav>
-
-
-            <div class=" buttons w-full flex justify-center items-center gap-6 mt-4 cursor-pointer ">
-                <span><i class=" ri-booklet-fill text-2xl font-medium text-red-600 " style=" "></i></span>
-                <div class=" rightbox w-[1.5vw] h-[1.5vw] flex justify-center items-center " style=" border: 2px solid black; ">
+            <div class="flex justify-center items-center gap-6 mt-4">
+                <span><i class="ri-booklet-fill text-2xl font-medium text-red-600"></i></span>
+                <div class="w-8 h-8 flex justify-center items-center border-2 border-black rounded-full">
                     <a href="/Notely/profile">
-                        <p><i class=" ri-check-double-fill "></i></p>
+                        <i class="ri-check-double-fill"></i>
                     </a>
                 </div>
             </div>
 
-            <div class="searchbar w-9/12 ml-[12.5%] mt-3 flex items-center gap-3 rounded-full px-4 py-1 text-black " style=" background-color:whitesmoke; ">
-                <p><i class=" ri-search-2-line "></i></p>
-                <input id="search " class=" w-full outline-0 cursor-pointer " type="text " placeholder=" Search notes " style=" background-color: transparent; ">
-                <p><i id="cancel" class="ri-close-circle-fill hidden text-2xl text-red-600"></i></p>
+            <div class="searchbar flex items-center gap-3 rounded-full px-4 py-2 bg-white text-black mx-auto mt-3 w-11/12 sm:w-10/12 md:w-8/12 lg:w-6/12">
+                <i class="ri-search-2-line"></i>
+                <input id="search" class="w-full outline-none bg-transparent" type="text" placeholder="Search notes">
+                <i id="cancel" class="ri-close-circle-fill hidden text-2xl text-red-600 cursor-pointer"></i>
             </div>
 
-            <h1 class="text-center  text-2xl font-medium mt-6" style="">Make your Persnalized notes now</h1>
-
+            <h1 class="text-center text-2xl font-medium mt-6">Make your Personalized notes now</h1>
         </nav>
 
-        <div id="allnotes" class="notes-section cursor-pointer notes flex gap-8 flex-wrap relative p-6 ml-[12.7%] overflow-x-hidden overflow-y-auto w-9/12 mt-4 h-[70vh] rounded-2xl " style=" ">
-
-            <div class=" addnotebtn fixed z-50 left-[78%] bottom-[20%] w-[3vw] h-[3vw] flex bg-red-600 items-center justify-center rounded-full " style=" ">
-                <a href=" /Notely/create/notes "><span><i class=" ri-add-line text-white text-2xl cursor-pointer "></i></span></a>
+        <div id="allnotes" class="notes-section flex flex-wrap gap-4 p-4 overflow-y-auto mt-4 h-[70vh] rounded-2xl mx-auto w-11/12 sm:w-10/12 md:w-8/12 lg:w-6/12 bg-gray-800">
+            <div class="addnotebtn fixed z-50 right-8 bottom-8 w-12 h-12 flex bg-gray-900  items-center justify-center rounded-full shadow-lg hover:bg-red-500">
+                <a href="/Notely/create/notes"><i class="ri-add-line text-white text-2xl"></i></a>
             </div>
 
-
-
-            <% if(allnotes.length > 0){  %>
-
+            <% if(allnotes.length > 0){ %>
                 <% allnotes.forEach(function(elem){ %>
-
-                    <div class="note text-white relative pt-2 w-[15vmax] h-[10vmax] overflow-x-hidden overflow-y-auto rounded-2xl bg-red-600 mb-1 " style=" ">
-
-
-                        <h3 class="text-lg font-medium tracking-wider ml-3 ">
+                    <div class="note overflow-x-auto w-full sm:w-5/12 md:w-4/12 lg:w-3/12 p-4 bg-gradient-to-r from-red-500 to-red-700 rounded-2xl mb-4  shadow-lg hover:shadow-2xl transition duration-300 ease-in-out h-40 sm:h-48 md:h-56 lg:h-64">
+                        <h3 class="text-lg font-medium tracking-wider">
                             <%= elem.title %>
                         </h3>
-
-                        <div class=" description w-full h-[55%] pt-2 ">
-                            <p class=" ml-3 leading-none text-lg font-light ">
+                        <div class="description pt-2">
+                            <p class="leading-none text-lg font-light truncate">
                                 <%= elem.description %>
                             </p>
                         </div>
-
-
-                        <span class=" ml-3 text-xs font-light absolute bottom-[5%] ">
-                                       <%=  elem.formattedDate %>
-                                    </span>
+                        <span class="text-xs font-light absolute bottom-2">
+                            <%= elem.formattedDate %>
+                        </span>
                     </div>
-
-
-
-                    <%   }   ) %>
-                        <%  } else{  %>
-                            <p>Sorry, you have'nt created any notes yet.</p>
-                            <%  } %>
-
-
-
-
-
+                    <% }) %>
+                        <% } else { %>
+                            <p>Sorry, you haven't created any notes yet.</p>
+                            <% } %>
         </div>
 
-
-        <div id="searchnotes" class="notes-section hidden cursor-pointer notes flex gap-8 flex-wrap relative p-6 ml-[12.7%] overflow-x-hidden overflow-y-auto w-9/12 mt-4 h-[70vh] rounded-2xl " style=" ">
-
+        <div id="searchnotes" class="notes-section hidden flex flex-wrap gap-4 p-4 overflow-y-auto mt-4 h-[70vh] rounded-2xl mx-auto w-11/12 sm:w-10/12 md:w-8/12 lg:w-6/12 bg-gray-800">
             <p id="message" class="hidden">No Search notes were found!</p>
         </div>
-
-
     </div>
 
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-        }
-        
         .notes-section::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .note::-webkit-scrollbar {
             display: none;
         }
         
         .note {
             resize: both;
             overflow: auto;
-            max-width: 100%;
-            max-height: 100%;
             cursor: pointer;
+            position: relative;
         }
         
         .description::-webkit-scrollbar {
             display: none;
-        }
-        
-        .description p {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            cursor: pointer;
         }
     </style>
 
     <script>
         let cancelButton = document.querySelector("#cancel");
         let SearchInput = document.querySelector("input");
-
-
 
         SearchInput.addEventListener("input", function(e) {
             let data = SearchInput.value;
@@ -150,26 +97,17 @@
                     let clutter = "";
                     if (response.data.length > 0) {
                         response.data.forEach(function(note) {
-                            clutter += `   <div class="note text-white relative pt-2 w-[15vmax] h-[10vmax] overflow-x-hidden overflow-y-auto rounded-2xl bg-red-600 mb-1 " style=" ">
-                                    <h3 class="text-lg font-medium tracking-wider ml-3 ">
-                                        ${note.title}
-                                    </h3>
-                    
-                                    <div class=" description w-full h-[55%] pt-2 ">
-                                        <p class=" ml-3 leading-none text-lg font-light ">
-                                        ${note.description}
-                                        </p>
+                            clutter += `<div class="note w-full sm:w-5/12 md:w-4/12 lg:w-3/12 p-4 bg-gradient-to-r from-red-500 to-red-700 rounded-2xl mb-4 overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 ease-in-out h-40 sm:h-48 md:h-56 lg:h-64">
+                                    <h3 class="text-lg font-medium tracking-wider">${note.title}</h3>
+                                    <div class="description pt-2">
+                                        <p class="leading-none text-lg font-light truncate">${note.description}</p>
                                     </div>
-                    
-                    
-                                </div>`
-                        })
+                                </div>`;
+                        });
 
                         document.querySelector("#searchnotes").innerHTML = clutter;
-
                     } else {
                         document.querySelector("#message").style.display = "block";
-
                     }
                 })
                 .catch(error => {
@@ -177,19 +115,15 @@
                 });
         });
 
-
-
-
-        cancelButton.addEventListener("click", function(dets) {
+        cancelButton.addEventListener("click", function() {
             document.querySelector("#searchnotes").classList.add("hidden");
             document.querySelector("#allnotes").style.display = "flex";
             SearchInput.value = "";
-
+            cancelButton.style.display = "none";
         });
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js" integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
 </body>
 
 </html>

@@ -1,3 +1,9 @@
+<!-- 
+    
+
+
+ -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +14,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/icons/remixicon.css" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            margin: 0;
+            padding: 0;
+        }
+        
         .container {
             max-width: 1280px;
             margin: auto;
@@ -15,56 +29,59 @@
         
         @media (max-width: 768px) {
             .container {
+                padding: 0 15px;
                 max-width: 100%;
             }
         }
         
-        @media (max-width: 640px) {
-            .w-full {
-                width: 100%;
-            }
-            .p-6 {
-                padding: 1rem;
-            }
-            .space-y-4 {
-                gap: 1rem;
-            }
+        .section {
+            padding: 80px 0;
         }
         
-        @media (max-width: 480px) {
-            .text-xl {
-                font-size: 1.25rem;
-            }
-            .text-sm {
-                font-size: 0.875rem;
-            }
-            .py-2.5 {
-                padding-top: 0.625rem;
-                padding-bottom: 0.625rem;
-            }
-            /* Responsive form container width */
-            .sm\:max-w-md {
-                max-width: 100%;
-            }
+        .icon-check {
+            color: #10b981;
+            font-size: 64px;
+            transition: transform 0.3s ease;
+        }
+        
+        .icon-check:hover {
+            transform: scale(1.1);
+        }
+        
+        .success-message {
+            text-align: center;
+            margin-top: 20px;
+            transition: opacity 0.3s ease;
+        }
+        
+        .success-message.hidden {
+            opacity: 0;
         }
     </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900">
-
-    <section class="bg-gray-50 dark:bg-gray-900">
-        <div class="container mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-20">
+<body class="bg-gray-900">
+    <section class="section">
+        <div class="container">
             <div class="flex flex-col items-center justify-center">
-                <i class="ri-check-line text-green-500 text-5xl"></i>
+                <i class="ri-check-line icon-check"></i>
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white mt-4">
                     Email Sent Successfully!
                 </h1>
-                <p class="text-sm font-light text-center text-gray-500 dark:text-gray-400 mt-2">
+                <p class="text-sm font-light text-center text-gray-500 dark:text-gray-400 mt-2 success-message hidden">
                     Check Your Email.
                 </p>
             </div>
         </div>
     </section>
+
+    <script>
+        // Adding a timeout to show the success message with a slight delay
+        setTimeout(() => {
+            const successMessage = document.querySelector('.success-message');
+            successMessage.classList.remove('hidden');
+        }, 500);
+    </script>
 </body>
 
 </html>
