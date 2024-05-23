@@ -8,7 +8,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
 // setting a database connection
-require("./config/db.config").dbconnection();
+require("./config/db.config").DbConnection();
 
 
 app.use(session({
