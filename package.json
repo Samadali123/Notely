@@ -1,11 +1,11 @@
 {
     "name": "cls",
     "version": "1.0.0",
-    "description": "Notes App",
+    "description": "This is a Notely a secured Notes App",
     "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon app.js"
+        "start": "npx nodemon app.js"
     },
     "keywords": [
         "notes",
