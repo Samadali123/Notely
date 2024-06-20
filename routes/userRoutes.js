@@ -26,7 +26,7 @@ const DeleteNoteController = require('../controllers/deletenote.controller');
 const EditPageController = require('../controllers/editnotepage.controller');
 const EditNoteController = require('../controllers/editnote.controller');
 const nodemailer = require("nodemailer");
-const { restart } = require('nodemon');
+
 const SearchNotesController = require("../controllers/searchnotes.controller")
 const ForgotPasswordPageController = require("../controllers/forgot.controller")
 const ForgotPasswordController = require("../controllers/forgotpassword.controller")
