@@ -94,7 +94,6 @@ passport.use(new GoogleStrategy({
         req.res.cookie('token', token, { maxAge: 3600000, httpOnly: true }); // Expires in 1 hour
 
         await newUser.save();
-        ``
         return cb(null, newUser)
     }
 }));
