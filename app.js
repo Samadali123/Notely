@@ -44,7 +44,7 @@ app.set("view engine", "ejs")
 app.use(express.static(path.join(__dirname, "public")));
 
 // logger for a route hit information in the backend
-const logger = require(`morgan`);
+const logger = require("morgan");
 app.use(logger('tiny'));
 
 
