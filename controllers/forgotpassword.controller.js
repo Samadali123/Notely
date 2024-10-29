@@ -4,45 +4,55 @@ const userModel = require("../models/users")
 const nodemailer = require("nodemailer")
 require("dotenv").config();
 
+const getBaseUrl = () => {
+    return process.env.NODE_ENV === 'production'
+      ? process.env.PROD_BASE_URL
+      : process.env.DEV_BASE_URL;
+  };
 
-const forgotpassword = async(req, res, next) => {
+  const generateResetPasswordUrl = () => {
+    const baseUrl = getBaseUrl();
+    return `${baseUrl}/Notely/resetpassword`;
+  };
 
+
+  const forgotpassword = async (req, res, next) => {
     const { email } = req.body;
-    const User = await userModel.findOne({ email })
+    const User = await userModel.findOne({ email });
 
     if (!User) {
         return res.status(403).render("server");
     } else {
-
-        var transporter = nodemailer.createTransport({
+        const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
                 user: process.env.Email,
-                pass: process.env.Password
+                pass: process.env.Password // Ensure this is your App Password
             }
         });
 
-
-        var mailOptions = {
-            from: process.env.Email, // Use the email you want to send from
-            to: email, // Make sure this field matches the recipient's email
-            subject: `Forget your Notely Password? Reset now using link given below`,
+        const mailOptions = {
+            from: process.env.Email,
+            to: email,
+            subject: 'Forgot your Notely Password? Reset now using the link below',
             html: `
-                    <a style="color: royalblue; font-size:18px; font-weight:600; text-decoration:none;" href="http://localhost:8080/Notely/resetpassword">Reset Password</a>
-                `
-        }
-
+              <a style="color: royalblue; font-size: 18px; font-weight: 600; text-decoration: none;" 
+                 href="${generateResetPasswordUrl()}">
+                Reset Password
+              </a>
+            `,
+        };
 
         transporter.sendMail(mailOptions, function(error, info) {
             if (error) {
-                return res.send(error)
+                return res.json({ success: false, message: error.message });
             }
             res.redirect("/Notely/Email/sent/successfully");
-        })
+        });
     }
+};
 
 
-}
 
 
 module.exports = forgotpassword;

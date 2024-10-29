@@ -1,7 +1,5 @@
 const express = require(`express`)
 const router = express.Router();
-const notesModel = require('../models/notes');
-const notes = require('../models/notes');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
 const userModel = require("../models/users");
@@ -25,8 +23,6 @@ const OpenNoteController = require('../controllers/opennotes.controller');
 const DeleteNoteController = require('../controllers/deletenote.controller');
 const EditPageController = require('../controllers/editnotepage.controller');
 const EditNoteController = require('../controllers/editnote.controller');
-const nodemailer = require("nodemailer");
-
 const SearchNotesController = require("../controllers/searchnotes.controller")
 const ForgotPasswordPageController = require("../controllers/forgot.controller")
 const ForgotPasswordController = require("../controllers/forgotpassword.controller")
@@ -72,7 +68,6 @@ passport.use(new GoogleStrategy({
 
         // Set token as a cookie using res object from request
         req.res.cookie('token', token, { maxAge: 3600000, httpOnly: true }); // Expires in 1 hour
-
         return cb(null, user);
     } else {
 

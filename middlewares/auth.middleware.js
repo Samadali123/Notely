@@ -18,8 +18,6 @@ function IsLoggedIn(req, res, next) {
         req.user = data;
         next();
     } catch (err) {
-
-        console.error('Token verification error:', err);
         return res.status(401).render("isloggedin")
     }
 }

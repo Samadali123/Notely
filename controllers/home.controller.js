@@ -1,38 +1,55 @@
 const userModel = require("../models/users")
 const notesModel = require("../models/notes")
+const NodeCache = require('node-cache');
+const cache = new NodeCache({ stdTTL: 60, checkperiod: 120 });
 
 
-const home = async(req, res, next) => {
+const home = async (req, res, next) => {
+  try {
+      // Check if notes are available in cache
+      let allnotes = cache.get('allnotes');
 
-    try {
-        const allnotes = await notesModel.find();
+      if (!allnotes) {
+          console.log('Cache miss! Fetching notes from the database...');
 
-        // Format the date for each note without changing the existing `date` property
-        allnotes.forEach((note) => {
-            let date = note.date;
-            let dateObj = new Date(date);
+          // Fetch notes from the database
+          allnotes = await notesModel.find();
 
-            let monthNames = [
-                '', 'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
+          // Format the date for each note
+          allnotes = allnotes.map(note => ({
+              ...note._doc, // Spread the original note properties
+              formattedDate: formatDate(note.date) // Use helper function to format date
+          }));
 
-            let day = dateObj.getDate();
-            let month = dateObj.getMonth() + 1;
-            let year = dateObj.getFullYear();
+          // Store the fetched and formatted notes in cache
+          cache.set('allnotes', allnotes);
+      } else {
+          console.log('Cache hit! Serving notes from cache...');
+      }
 
-            let monthName = monthNames[month];
-            let formattedDate = `${monthName} ${day}, ${year}`;
+      // Render the home view with notes
+      res.render('home', { allnotes });
+  } catch (err) {
+      console.error(err); // Log the error for debugging
+      res.status(500).render('server', { message: "An error occurred while fetching notes." });
+  }
+};
 
-            // Assign the formatted date to a new property in each note
-            note.formattedDate = formattedDate;
-        });
-        res.render('home', { allnotes });
-    } catch (err) {
-        res.status(500).render("server")
-    }
+// Helper function to format date
+const formatDate = (date) => {
+  const monthNames = [
+      '', 'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
-}
+  const dateObj = new Date(date);
+  const day = dateObj.getDate();
+  const monthName = monthNames[dateObj.getMonth() + 1];
+  const year = dateObj.getFullYear();
 
+  return `${monthName} ${day}, ${year}`;
+};
+
+  
 
 module.exports = home;

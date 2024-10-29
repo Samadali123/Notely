@@ -40,7 +40,6 @@ const resetpassword = async(req, res) => {
         res.redirect("/Notely/home"); // Uncomment or adjust as needed
 
     } catch (error) {
-        console.error(error); // Log the error for debugging
         res.status(500).send('An error occurred during the password reset process.'); // Send a more informative message
     }
 }

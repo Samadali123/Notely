@@ -32,7 +32,7 @@ const createpage = (req, res) => {
         // Format the date and time as "25 April 11:55 pm"
         const formattedDate = `${day} ${monthNames[month]} ${hours}:${formattedMinutes} ${period}`;
 
-        console.log(formattedDate); // Output example: "25 April 11:55 pm"
+
 
         res.render('notes', { formattedDate })
 

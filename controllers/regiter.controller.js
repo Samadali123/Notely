@@ -35,8 +35,6 @@ const registeraccount = async(req, res) => {
 
         res.redirect("/Notely/home");
     } catch (error) {
-
-        console.error(error);
         res.status(500).render("server")
     }
 }

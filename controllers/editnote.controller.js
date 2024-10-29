@@ -26,7 +26,6 @@ const editnote = async(req, res) => {
         res.redirect("/Notely/profile");
 
     } catch (error) {
-        console.error(error);
         res.status(500).render("server")
     }
 }
