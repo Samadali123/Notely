@@ -36,7 +36,7 @@ const EmailSentPageController = require("../controllers/MailPage.controller")
 
 const secretKey = process.env.JWT_SECRET_KEY;
 // index Api
-router.get("/Notely", IndexController);
+router.get("/", IndexController);
 
 //  login page Api
 router.get("/Notely/login", LoginController)
