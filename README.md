@@ -1,4 +1,4 @@
-# Notes App
+# Notely a modern notes web app
 
 This project is a full-fledged notes application with modern UI and various features including note creation, search, editing, and deletion. The app also supports user authentication using Google Auth and password recovery using Nodemailer.
 
